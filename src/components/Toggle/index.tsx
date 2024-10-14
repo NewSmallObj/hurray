@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react";
+import { detectTheme } from "@/app/utils/detectTheme";
+import { useLayoutEffect, useState } from "react";
 
 type Theme = 'light' | 'dark' ;
 const themeValues = {
@@ -20,6 +21,11 @@ export default function Toggle() {
     setTheme(theme === 'light' ? 'dark' : 'light')
     setCssVar(theme === 'light' ? 'dark' : 'light')
   }
+
+  useLayoutEffect(()=>{
+    setTheme(detectTheme() as Theme)
+    setCssVar(detectTheme() as Theme)
+  },[])
   
   const setCssVar = (theme: Theme) => {
     const root = document.documentElement;
