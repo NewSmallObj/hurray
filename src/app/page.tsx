@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { Button } from 'antd'
-import SelectorTheme from '@/components/SelectorTheme/index'
-import Toggle from '@/components/Toggle/index'
+import SelectorTheme from '@/app/components/SelectorTheme/index'
+import Toggle from '@/app/components/Toggle/index'
 
 export default function Home() {
 	return (
