@@ -14,6 +14,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  darkMode: ['selector', '[data-theme="dark"]'],
+  daisyui: {
+    themes: ["light", "dark", "cupcake"],
+  },
+  plugins: [
+    require('daisyui'),
+  ],
 };
 export default config;
