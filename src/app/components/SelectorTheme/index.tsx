@@ -2,7 +2,7 @@
 import useTheme from '@/app/store/useTheme'
 import { detectTheme } from '@/app/utils/detectTheme'
 import { Theme, themes, themeValues } from '@/app/utils/themeStants'
-import { DownOutlined } from '@ant-design/icons'
+import { BgColorsOutlined } from '@ant-design/icons'
 import { Button, Dropdown, MenuProps, Space } from 'antd'
 import { useLayoutEffect, useMemo } from 'react'
 
@@ -47,10 +47,7 @@ export default function SelectorTheme() {
 				trigger={['click']}
 			>
 				<Button type='text' onClick={(e) => e.preventDefault()}>
-					<Space>
-						切换主题
-						<DownOutlined />
-					</Space>
+          <BgColorsOutlined />
 				</Button>
 			</Dropdown>
 

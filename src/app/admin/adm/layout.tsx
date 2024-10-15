@@ -49,7 +49,7 @@ export default function RootLayout({
               {sider}
             </Splitter.Panel>
             <Splitter.Panel>
-              <div className='w-full h-full p-[20px] box-border'>
+              <div className='w-full h-full box-border'>
                 {children}
               </div>
             </Splitter.Panel>
