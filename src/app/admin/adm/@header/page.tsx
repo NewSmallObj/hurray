@@ -1,11 +1,10 @@
+import Account from "@/app/components/Account/index";
 import SelectorTheme from "@/app/components/SelectorTheme/index";
 // import useTheme from "@/app/store/useTheme";
 import { Button } from "antd";
 import clsx from "clsx"
 
 export default function Header(){
-  
-  // const { currentTheme } = useTheme()
   
   return (
     <div 
@@ -15,9 +14,9 @@ export default function Header(){
         })
       }>
       <div>Header</div>
-      <div className="flex justify-end items-center">
-        <Button type="primary">按钮</Button>
+      <div className="flex justify-end items-center gap-1">
         <SelectorTheme />
+        <Account />
       </div>
     </div>
   )

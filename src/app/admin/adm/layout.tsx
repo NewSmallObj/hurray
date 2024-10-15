@@ -39,10 +39,9 @@ export default function RootLayout({
         token: themeValues[currentTheme].token
       }} 
       locale={zhCN}>
-			
       <Splitter layout="vertical" className='w-full h-full box-border'>
         <Splitter.Panel max={50} defaultSize={50}>
-          {header} 
+          {header}
         </Splitter.Panel>
         <Splitter.Panel>
           <Splitter layout="horizontal">
@@ -50,7 +49,6 @@ export default function RootLayout({
               {sider}
             </Splitter.Panel>
             <Splitter.Panel>
-              
               <div className='w-full h-full p-[20px] box-border'>
                 {children}
               </div>
