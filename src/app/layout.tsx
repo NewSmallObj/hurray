@@ -27,13 +27,12 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en" data-theme="cupcake">
+    // 
+		<html lang="en" data-theme="light">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<ConfigProvider theme={{ cssVar: true }} locale={zhCN}>
 					<AntdRegistry>{children}</AntdRegistry>
-				</ConfigProvider>
 			</body>
 		</html>
 	)

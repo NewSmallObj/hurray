@@ -1,86 +1,74 @@
-"use client"
-import React, { useMemo, useState } from 'react';
-import { ConfigProvider, MenuProps } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space } from 'antd';
+'use client'
+import useTheme from '@/app/store/useTheme'
+import { detectTheme } from '@/app/utils/detectTheme'
+import { Theme, themes, themeValues } from '@/app/utils/themeStants'
+import { DownOutlined } from '@ant-design/icons'
+import { Button, Dropdown, MenuProps, Space } from 'antd'
+import { useLayoutEffect, useMemo } from 'react'
 
+export default function SelectorTheme() {
+	const { currentTheme, setCurrentTheme } = useTheme()
 
+	const items = useMemo<MenuProps['items']>(() => {
+		return themes.map((v) => ({
+			key: v,
+			label: v,
+			value: v,
+		}))
+	}, [themes])
 
-export const themes = ['light','dark' ,'cupcake'];
-type Theme = 'light' | 'dark'| 'cupcake' ;
+	const setCssVar = (theme: Theme) => {
+		const root = document.documentElement
+    const {token,...values} = themeValues[theme]
+		Object.entries(values).forEach(([key, value]) => {
+			root.style.setProperty(key, value)
+		})
+	}
 
-const themeValues = {
-  light: {
-    '--background': '#ffffff',
-    '--foreground': '#171717',
-  },
-  dark: {
-    '--background': '#0a0a0a',
-    '--foreground': '#ededed',
-  },
-  cupcake: {
-    '--background': '#ffffff',
-    '--foreground': '#171717',
-  },
-};
+	useLayoutEffect(() => {
+		setCurrentTheme(detectTheme() as Theme)
+		setCssVar(detectTheme() as Theme)
+	}, [])
 
+	const handleMenuClick: MenuProps['onClick'] = (e) => {
+		setCurrentTheme(e.key as Theme)
+		setCssVar(e.key as Theme)
+	}
 
-export default function SelectorTheme(){
+	return (
+		<div>
+			<Dropdown
+				menu={{
+					items,
+					selectable: true,
+					defaultSelectedKeys: [currentTheme],
+					onClick: handleMenuClick,
+				}}
+				trigger={['click']}
+			>
+				<Button type='text' onClick={(e) => e.preventDefault()}>
+					<Space>
+						切换主题
+						<DownOutlined />
+					</Space>
+				</Button>
+			</Dropdown>
 
-  const [theme,setTheme] = useState<Theme>('light');
-
-  const items = useMemo<MenuProps['items']>(()=>{
-      return themes.map(v=>({
-        key:v,
-        label:v,
-        value:v
-      }))
-  },[themes])
-
-  const setCssVar = (theme: Theme) => {
-    const root = document.documentElement;
-    Object.entries(themeValues[theme]).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });  
-  };
-  
-  
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    setTheme(e.key as Theme)
-    setCssVar(e.key as Theme)
-  };
-  
-  return (
-    <div>
-      <Dropdown menu={{ 
-          items,
-          selectable: true,
-          defaultSelectedKeys: [theme],
-          onClick: handleMenuClick,
-        }} trigger={['click']}>
-        <a onClick={(e) => e.preventDefault()}>
-          <Space>
-            切换主题
-            <DownOutlined />
-          </Space>
-        </a>
-      </Dropdown>
-      
-      <div className="hidden">
-        {
-          themes.map((v)=>(
-            <input
-              key={v}
-              type="checkbox"
-              className="theme-controller"
-              aria-label={v}
-              checked={v === theme}
-              value={v}
-              onChange={(e)=>setTheme(e.target.value as Theme)}
-            />
-          ))
-        }
-      </div>
-    </div>
-  )
+			<div className="hidden">
+				{themes.map((v) => (
+					<input
+						key={v}
+						type="checkbox"
+						className="theme-controller"
+						aria-label={v}
+						checked={v === currentTheme}
+						value={v}
+						onChange={(e) =>
+							setCurrentTheme(e.target.value as Theme)
+						}
+					/>
+				))}
+			</div>
+		</div>
+	)
 }

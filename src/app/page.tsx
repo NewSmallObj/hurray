@@ -5,7 +5,7 @@ import Toggle from '@/app/components/Toggle/index'
 
 export default function Home() {
 	return (
-		<div className="w-full h-full box-border bg-[background] text-[foreground]">
+		<div className="w-full h-full box-border bg-[--background] text-[--foreground]">
 			<Button type='primary'>Button</Button>
 			<button className="btn">Button</button>
 			<table className="table">
