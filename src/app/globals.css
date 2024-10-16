@@ -42,3 +42,7 @@ a {
     text-wrap: balance;
   }
 }
+
+.ant-tabs-nav{
+  margin-bottom: 0px !important;
+}

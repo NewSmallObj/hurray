@@ -18,7 +18,7 @@ export const themeValues = {
     '--foreground': '#171717',
     'token': {
       colorPrimary: '#291334',
-      borderRadius: 99
+      // borderRadiusOuter: 99
     }
   },
   pastel: {
@@ -26,7 +26,7 @@ export const themeValues = {
     '--foreground': '#171717',
     'token': {
       colorPrimary: '#70acc7',
-      borderRadius: 99
+      // borderRadiusOuter: 99
     }
   },
   valentine:{
@@ -34,7 +34,7 @@ export const themeValues = {
     '--foreground': '#171717',
     'token': {
       colorPrimary: '#af4670',
-      borderRadius: 99
+      // borderRadiusOuter: 99
     }
   }
 };
