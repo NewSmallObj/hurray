@@ -1,16 +1,14 @@
-// import withAuth from "next-auth/middleware"
-// import { getToken } from 'next-auth/jwt';
-// import { NextRequest, NextResponse,NextFetchEvent } from 'next/server'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import withAuth from "next-auth/middleware"
+import { getToken } from 'next-auth/jwt';
+import { NextRequest, NextResponse,NextFetchEvent } from 'next/server'
 
-// export default withAuth(
-//   {
-//     pages: {
-//       signIn: "/",
-//     },
-//   }
-// );
+export default withAuth(
+  {
+    pages: {
+      signIn: "/admin/login",
+    },
+  }
+);
 
 export const config = { 
   matcher: [
@@ -18,12 +16,12 @@ export const config = {
   ]
 };
 
-export function middleware(request: NextRequest) {
-  const requestHeaders = new Headers(request.headers)
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  })
-  return response
-}
+// export function middleware(request: NextRequest) {
+//   const requestHeaders = new Headers(request.headers)
+//   const response = NextResponse.next({
+//     request: {
+//       headers: requestHeaders,
+//     },
+//   })
+//   return response
+// }

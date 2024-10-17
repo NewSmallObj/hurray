@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int          @default(autoincrement()) @id
+  name          String       @db.VarChar(50)
+  username      String       @db.VarChar(50)
+  password      String       @db.VarChar(100)
+  email         String?      @db.VarChar(20)
+  sort          Int?         @default(0)
+  mobile        String?      @db.VarChar(20)
+  remark        String?      @db.VarChar(200)
+  status        Boolean?     @default(false)
+  createdTime   DateTime  @default(now()) @map(name: "create_time")
+  updatedTime   DateTime  @updatedAt @map(name: "update_time")
+  user_role     UserRole[]       
+  @@map(name: "users")
+}
+
+model Role {
+  id            Int       @default(autoincrement()) @id
+  name          String       @db.VarChar(50)
+  code          String       @db.VarChar(50)
+  status        Boolean?     @default(false)
+  sort          Int?         @default(0)
+  remark        String?      @db.VarChar(200)
+  createdById   Int        
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  user_role     UserRole[]   
+}
+
+model UserRole {
+  user_id     Int
+  role_id     Int
+  users  User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  roles  Role @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([user_id, role_id], map: "user_role")
+}
