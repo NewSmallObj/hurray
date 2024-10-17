@@ -1,20 +1,37 @@
 "use client";
 import React from 'react'
-import { FormDialog, FormItem, FormLayout, Input } from '@formily/antd-v5'
+import { FormItem,
+  FormLayout,
+  Input,
+  Select,
+  PreviewText,
+  Switch,
+  NumberPicker,
+  TreeSelect } from '@formily/antd-v5'
 import { createSchemaField, FormProvider, ISchema, Schema } from '@formily/react'
 import { Button } from 'antd'
 import { createForm } from '@formily/core';
 
-const SchemaField = createSchemaField({
-  components: {
-    FormItem,
-    Input,
-  },
-})
 
 
 export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
   const form = createForm();
+
+  const SchemaField = createSchemaField({
+    components: {
+      FormItem,
+      Input,
+      Select,
+      PreviewText,
+      Switch,
+      NumberPicker,
+      TreeSelect,
+    },
+    scope:{
+      ...scope
+    }
+  })
+  
 
   return (
       <FormProvider form={form}>

@@ -15,8 +15,9 @@ import {
 import { useAntdTable } from 'ahooks'
 import { FormDialog } from '@formily/antd-v5'
 import SchemaForm from '@/app/components/SchemaForm/index'
-import { IFormProps } from '@formily/core'
+import { Field, IFormProps } from '@formily/core'
 import { MENU_SCHEMA } from '@/app/schema/menu'
+import { PAGE_SYS_MENU } from '@/app/utils/stants'
 
 const { Option } = Select
 
@@ -57,17 +58,26 @@ export default function MenuPage() {
 
 	const { tableProps, search, params } = useAntdTable(getTableData, {
 		defaultPageSize: 5,
-		cacheKey: 'useAntdTableCache',
+		cacheKey: PAGE_SYS_MENU,
 		form,
 	})
 
 	const { type, changeType, submit, reset } = search
+
+  const fetchMenuTree = (field:Field)=>{
+    // const list = treeToArray(tableData.value.list,'0').map((v)=>({...v,label:v.name,value:v.id}))
+    
+    field.loading = true
+    field.dataSource = [...tableProps.dataSource] // {label:"-",value:'0',children:arrayToTree(list)}
+    field.loading = false
+  }
 
 	const hanlder = async () => {
 		const dialog = await FormDialog(
 			'编辑',
 			SchemaForm(MENU_SCHEMA, {
 				readOnly: true,
+        fetchMenuTree
 			})
 		)
 		await dialog.forOpen((payload:IFormProps, next:(props?: IFormProps) => Promise<any>) => {

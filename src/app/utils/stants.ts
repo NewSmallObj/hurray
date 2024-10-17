@@ -1,6 +1,9 @@
 export const LAYOUTTAGS = "LAYOUTTAGS"
 
 
+export const PAGE_SYS_MENU = "PAGE_SYS_MENU"
+
+
 export const statusOperation = {
   undefined: '新增',
   'view': "查看",
