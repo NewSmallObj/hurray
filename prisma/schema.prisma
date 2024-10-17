@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id            Int          @default(autoincrement()) @id
+  id            String          @default(cuid()) @id
   name          String       @db.VarChar(50)
   username      String       @db.VarChar(50)
   password      String       @db.VarChar(100)
@@ -30,7 +30,7 @@ model User {
 }
 
 model Role {
-  id            Int       @default(autoincrement()) @id
+  id            String       @default(cuid()) @id
   name          String       @db.VarChar(50)
   code          String       @db.VarChar(50)
   status        Boolean?     @default(false)
@@ -40,13 +40,16 @@ model Role {
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   user_role     UserRole[]   
+  
+  @@map(name: "roles")
 }
 
 model UserRole {
-  user_id     Int
-  role_id     Int
+  user_id     String
+  role_id     String
   users  User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   roles  Role @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([user_id, role_id], map: "user_role")
+  @@map(name: "user_role")
 }
