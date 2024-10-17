@@ -24,6 +24,13 @@ export default function LayoutSider(){
           name: "字典管理",
           pid: 1,
           id: 12,
+        },
+        {
+          path: '/admin/adm/sys/user',
+          icon: '',
+          name: "用户管理",
+          pid: 1,
+          id: 13,
         }
       ],
     }

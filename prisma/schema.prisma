@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id            String          @default(cuid()) @id
+  id            String       @default(cuid()) @id
   name          String       @db.VarChar(50)
   username      String       @db.VarChar(50)
   password      String       @db.VarChar(100)
@@ -23,9 +23,10 @@ model User {
   mobile        String?      @db.VarChar(20)
   remark        String?      @db.VarChar(200)
   status        Boolean?     @default(false)
-  createdTime   DateTime  @default(now()) @map(name: "create_time")
-  updatedTime   DateTime  @updatedAt @map(name: "update_time")
-  user_role     UserRole[]       
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  user_role     UserRole[]      
+  user_dept     UserDept[] 
   @@map(name: "users")
 }
 
@@ -40,7 +41,7 @@ model Role {
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   user_role     UserRole[]   
-  
+  menu_role     MenuRole[]
   @@map(name: "roles")
 }
 
@@ -52,4 +53,97 @@ model UserRole {
 
   @@unique([user_id, role_id], map: "user_role")
   @@map(name: "user_role")
+}
+
+
+model Menu {
+  id            String       @default(cuid()) @id
+  pid           String       @db.VarChar(50)
+  type          Int          @default(1) // 1目录 2菜单 3按钮
+  name          String       @db.VarChar(50)
+  icon          String?      @db.VarChar(50)
+  route_path    String?      
+  sort          Int?         @default(0)
+  perms         String?      @db.VarChar(200)
+  addit_perms   String?      @db.VarChar(200)
+  remark        String?      @db.VarChar(200)
+  createdById   Int        
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  menu_role     MenuRole[]   
+  
+  @@map(name: "menus")
+}
+
+model MenuRole {
+  menu_id     String
+  role_id     String
+  menus  Menu @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  roles  Role @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([menu_id, role_id], map: "menu_role")
+  @@map(name: "menu_role")
+}
+
+
+model Dept {
+  id            String       @default(cuid()) @id
+  pid           String       @db.VarChar(50)
+  name          String       @db.VarChar(50)
+  status        Boolean?     @default(false)
+  sort          Int         @default(0)
+  remark        String?      @db.VarChar(200)
+  createdById   Int        
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  dept_user     UserDept[]   
+  
+  @@map(name: "depts")
+}
+
+
+model UserDept {
+  dept_id     String
+  user_id     String
+  depts  Dept @relation(fields: [dept_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users  User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([dept_id, user_id], map: "user_dept")
+  @@map(name: "user_dept")
+}
+
+
+model Dict {
+  id            String       @default(cuid()) @id
+  name          String       @db.VarChar(50)
+  code          String       @db.VarChar(50)
+  sort          Int          @default(0)
+  readonly      Boolean?     @default(false)
+  disabled      Boolean?     @default(false)
+  login_return  Boolean?     @default(true)
+  remark        String?      @db.VarChar(200)
+  createdById   Int        
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  dict_datas    DitcData[]
+  
+  @@map(name: "dicts")
+}
+
+
+model DitcData {
+  id            String       @default(cuid()) @id
+  label         String       @db.VarChar(50)
+  dict          Dict         @relation(fields: [dict_code], references: [id])
+  dict_code     String
+  value         String       @db.VarChar(50)
+  sort          Int          @default(0)
+  readonly      Boolean?     @default(false)
+  disabled      Boolean?     @default(false)
+  remark        String?      @db.VarChar(200)
+  createdById   Int        
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  
+  @@map(name: "dict_datas")
 }
