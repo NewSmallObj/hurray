@@ -31,6 +31,13 @@ export default function LayoutSider(){
           name: "用户管理",
           pid: 1,
           id: 13,
+        },
+        {
+          path: '/admin/adm/sys/dept',
+          icon: '',
+          name: "部门管理",
+          pid: 1,
+          id: 13,
         }
       ],
     }

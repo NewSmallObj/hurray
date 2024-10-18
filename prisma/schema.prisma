@@ -20,6 +20,7 @@ model User {
   password      String       @db.VarChar(100)
   email         String?      @db.VarChar(20)
   sort          Int?         @default(0)
+  type          String       @db.VarChar(50)
   mobile        String?      @db.VarChar(20)
   remark        String?      @db.VarChar(200)
   disabled      Boolean?     @default(false)
@@ -91,8 +92,9 @@ model Dept {
   pid           String       @db.VarChar(50)
   name          String       @db.VarChar(50)
   status        Boolean?     @default(false)
-  sort          Int         @default(0)
+  sort          Int          @default(0)
   remark        String?      @db.VarChar(200)
+  type          String       @db.VarChar(50)
   createdById   Int        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")

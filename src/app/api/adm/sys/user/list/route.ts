@@ -39,7 +39,7 @@ export async function GET(request: Request) {
           role_id: params.roleId || undefined
         }
       },
-      status: params.disabled || undefined
+      disabled: params.disabled || undefined
     },
     skip: (params.page - 1) * params.limit,
     take: params.limit,
@@ -70,7 +70,8 @@ export async function GET(request: Request) {
         some: {
           role_id: params.roleId || undefined
         }
-      }
+      },
+      disabled: params.disabled || undefined
     }
   })
 
