@@ -22,7 +22,7 @@ model User {
   sort          Int?         @default(0)
   mobile        String?      @db.VarChar(20)
   remark        String?      @db.VarChar(200)
-  status        Boolean?     @default(false)
+  disabled      Boolean?     @default(false)
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   user_role     UserRole[]      

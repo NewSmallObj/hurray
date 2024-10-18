@@ -9,8 +9,9 @@ import { FormItem,
   NumberPicker,
   TreeSelect } from '@formily/antd-v5'
 import { createSchemaField, FormProvider, ISchema, Schema } from '@formily/react'
-import { Button } from 'antd'
+import { Button, ConfigProvider } from 'antd'
 import { createForm } from '@formily/core';
+import zhCN from 'antd/locale/zh_CN'
 
 
 
@@ -34,10 +35,12 @@ export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
   
 
   return (
+    <ConfigProvider locale={zhCN}>
       <FormProvider form={form}>
-        <FormLayout labelCol={6} wrapperCol={10}>
+        <FormLayout labelCol={6} wrapperCol={16}>
           <SchemaField schema={schema} />
         </FormLayout>
       </FormProvider>
+    </ConfigProvider>
   )
 }

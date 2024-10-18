@@ -1,4 +1,5 @@
 import withAuth from "next-auth/middleware"
+// import { default } from "next-auth/middleware"
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse,NextFetchEvent } from 'next/server'
 
@@ -7,6 +8,15 @@ export default withAuth(
     pages: {
       signIn: "/admin/login",
     },
+    callbacks:{
+      authorized: async ({token,req}) => {
+        if(!token) return false
+        if(req.nextUrl.pathname.startsWith('/admin/adm')){
+          // return token.userId
+        }
+        return true
+      }
+    }
   }
 );
 

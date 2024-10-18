@@ -48,3 +48,10 @@ export const getUserList = async (params: any) => {
     total:res.data.totalRow
   }
 }
+
+
+export const sysUserFind = async (id: string) => {
+  return await requset<UserType>({
+    url: URL.SystemUserFind + '/' + id
+  })
+}
