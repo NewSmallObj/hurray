@@ -37,7 +37,7 @@ export default function LayoutSider(){
           icon: '',
           name: "部门管理",
           pid: 1,
-          id: 13,
+          id: 14,
         }
       ],
     }

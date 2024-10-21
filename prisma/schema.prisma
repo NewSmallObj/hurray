@@ -38,7 +38,7 @@ model Role {
   status        Boolean?     @default(false)
   sort          Int?         @default(0)
   remark        String?      @db.VarChar(200)
-  createdById   Int        
+  createdById   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   user_role     UserRole[]   
@@ -68,7 +68,7 @@ model Menu {
   perms         String?      @db.VarChar(200)
   addit_perms   String?      @db.VarChar(200)
   remark        String?      @db.VarChar(200)
-  createdById   Int        
+  createdById   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   menu_role     MenuRole[]   
@@ -95,7 +95,7 @@ model Dept {
   sort          Int          @default(0)
   remark        String?      @db.VarChar(200)
   type          String       @db.VarChar(50)
-  createdById   Int        
+  createdById   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   dept_user     UserDept[]   
@@ -124,16 +124,16 @@ model Dict {
   disabled      Boolean?     @default(false)
   login_return  Boolean?     @default(true)
   remark        String?      @db.VarChar(200)
-  createdById   Int        
+  createdById   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
-  dict_datas    DitcData[]
+  dict_datas    DictData[]
   
   @@map(name: "dicts")
 }
 
 
-model DitcData {
+model DictData {
   id            String       @default(cuid()) @id
   label         String       @db.VarChar(50)
   dict          Dict         @relation(fields: [dict_code], references: [id])
@@ -143,7 +143,7 @@ model DitcData {
   readonly      Boolean?     @default(false)
   disabled      Boolean?     @default(false)
   remark        String?      @db.VarChar(200)
-  createdById   Int        
+  createdById   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   

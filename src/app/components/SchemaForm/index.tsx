@@ -16,7 +16,7 @@ import zhCN from 'antd/locale/zh_CN'
 
 
 export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
-  const form = createForm();
+  // const form = createForm();
 
   const SchemaField = createSchemaField({
     components: {
@@ -36,11 +36,11 @@ export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
 
   return (
     <ConfigProvider locale={zhCN}>
-      <FormProvider form={form}>
+      {/* <FormProvider> */}
         <FormLayout labelCol={6} wrapperCol={16}>
           <SchemaField schema={schema} />
         </FormLayout>
-      </FormProvider>
+      {/* </FormProvider> */}
     </ConfigProvider>
   )
 }
