@@ -80,7 +80,7 @@ const MenuItem = ({menu}: {menu:any[]}) => {
             <li key={item.id}>
               <a className={
                 clsx(`text-[inherit] hover:text-[inherit]`,{
-                    'active': item.path === pathname
+                    'active': pathname.includes(item.path) && pathname != '/admin/adm' // item.path === pathname
                   })
                 }
                 onClick={()=> handler(item)}

@@ -30,20 +30,21 @@ export const DICT_DATA_SCHEMA = {
       required: true,
       'x-decorator': 'FormItem',
       'x-read-pretty': '{{readOnly}}',
-      'x-component': 'NumberPicker',
+      'x-component': 'Input',
       'x-validator': [
         {
           triggerType: 'onBlur',
+          max: 50,
+          min: 1,
           required: true,
           whitespace: true,
-          message: '请输入值',
+          message: '名称应在1-50个字符之间',
         },
       ],
       'x-component-props': {
         placeholder: '请输入值',
         allowClear: true,
-        max: 999999,
-        min: -999999,
+        maxlength: 50,
       },
     },
     remark: {

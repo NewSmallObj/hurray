@@ -24,3 +24,16 @@ export const GET = async (request: NextRequest,
     loginReturn: login_return
   })
 }
+
+
+export const DELETE = async (request: NextRequest,
+  { params }: { params: Params }
+  )=> {
+    await prisma.dict.delete({
+      where: {
+        id: params.dictId
+      }
+    })
+    
+    return ResponseSuccess(null)
+  }

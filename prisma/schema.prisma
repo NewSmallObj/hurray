@@ -118,7 +118,7 @@ model UserDept {
 model Dict {
   id            String       @default(cuid()) @id
   name          String       @db.VarChar(50)
-  code          String       @db.VarChar(50)
+  code          String       @db.VarChar(50) @unique
   sort          Int          @default(0)
   readonly      Boolean?     @default(false)
   disabled      Boolean?     @default(false)
@@ -136,7 +136,8 @@ model Dict {
 model DictData {
   id            String       @default(cuid()) @id
   label         String       @db.VarChar(50)
-  dict          Dict         @relation(fields: [dict_code], references: [id])
+  dict          Dict         @relation(fields: [dict_id], references: [id])
+  dict_id       String
   dict_code     String
   value         String       @db.VarChar(50)
   sort          Int          @default(0)

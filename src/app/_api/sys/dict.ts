@@ -4,7 +4,7 @@ enum URL {
   SystemDictList = '/adm/sys/dict/list',
   SystemDict = '/adm/sys/dict',
   SystemDictDataList = '/adm/sys/dict-data/list',
-  SystemDictDataAdd = '/adm/sys/dict-data',
+  SystemDictData = '/adm/sys/dict-data',
 }
 
 export interface PageData<T> {
@@ -77,6 +77,13 @@ export const sysDictFind = async (id: string) => {
 }
 
 
+export const sysDictDelete = async (id: string) => {
+  return await requset({
+    url: URL.SystemDict + '/' + id,
+    method: 'delete'
+  })
+}
+
 
 export interface DictDataType {
   creatorName?: any;
@@ -85,7 +92,7 @@ export interface DictDataType {
   updaterName?: any;
   updaterUserName?: any;
   updateTime: string;
-  id: string;
+  id: string | undefined;
   dictId: string;
   dictCode: string;
   label: string;
@@ -108,7 +115,26 @@ export const getDictDataList = async (params: any) => {
     }
   })
   return {
-    list:res.data.records,
+    list:res.data.records.map((v)=>({...v,dictCode:params.dict_code})),
     total:res.data.totalRow
   }
+}
+
+export const sysDictDataSave = async (params: any) => {
+  const {dictCode,...values} = params
+  return await requset<DictDataType>({
+    url: URL.SystemDictData,
+    method: params.id ? 'put' : 'post',
+    data: {
+      ...values,
+      dict_code: dictCode
+    }
+  })
+}
+
+export const sysDictDataDelete = async (id: string) => {
+  return await requset({
+    url: URL.SystemDictData + '/' + id,
+    method: 'delete'
+  })
 }

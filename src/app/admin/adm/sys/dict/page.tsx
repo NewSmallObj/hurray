@@ -6,7 +6,7 @@ import {
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
-import { getDictList, sysDictFind, DictType, sysDictSave } from '@/app/_api/sys/dict'
+import { getDictList, sysDictFind, DictType, sysDictSave, sysDictDelete } from '@/app/_api/sys/dict'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable, useThrottleEffect } from 'ahooks'
@@ -16,6 +16,7 @@ import {
 	Form,
 	Input,
 	message,
+	Popconfirm,
 	Row,
 	Select,
 	Space,
@@ -98,13 +99,28 @@ export default function DictPage() {
 					>
 						编辑
 					</Button>
-					<Button type="link" danger onClick={() => {}}>
-						删除
-					</Button>
+          <Popconfirm
+						title="确认删除?"
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+            <Button type="link" danger onClick={() => handlerDelete(record)}>
+              删除
+            </Button>
+          </Popconfirm>
 				</Space>
 			),
 		},
 	]
+
+  const handlerDelete = async (row:DictType)=>{
+    const res = await sysDictDelete(row.id!)
+    if(res.code === 200){
+      message.success('删除成功')
+      await reset()
+    }
+  }
 
 	// 编辑
 	const addFormroot = (

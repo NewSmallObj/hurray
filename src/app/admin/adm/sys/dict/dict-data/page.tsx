@@ -6,7 +6,12 @@ import {
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
-import { getDictDataList, DictDataType } from '@/app/_api/sys/dict'
+import {
+	getDictDataList,
+	DictDataType,
+	sysDictDataSave,
+  sysDictDataDelete,
+} from '@/app/_api/sys/dict'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable, useThrottleEffect } from 'ahooks'
@@ -15,11 +20,14 @@ import {
 	Col,
 	Form,
 	Input,
+	message,
+	Popconfirm,
 	Row,
 	Select,
 	Space,
 	Table,
 	TableColumnType,
+	Tag,
 } from 'antd'
 import { defer } from 'lodash'
 import { useSearchParams } from 'next/navigation'
@@ -30,9 +38,9 @@ export default function DictDataPage() {
 	const searchParams = useSearchParams()
 
 	const { tableProps, search, params } = useAntdTable(getDictDataList, {
-    defaultParams:[
-      {current:1,pageSize:5,dictId:searchParams.get('id')},
-    ],
+		defaultParams: [
+			{ current: 1, pageSize: 5, dictId: searchParams.get('id') },
+		],
 		manual: true,
 		defaultPageSize: 5,
 		cacheKey: PAGE_SYS_DICT_DATA,
@@ -52,7 +60,7 @@ export default function DictDataPage() {
 
 	const columns: TableColumnType<DictDataType>[] = [
 		{
-			dataIndex: 'name',
+			dataIndex: 'label',
 			title: '名称',
 		},
 		{
@@ -66,10 +74,20 @@ export default function DictDataPage() {
 		{
 			dataIndex: 'disabled',
 			title: '是否禁用',
+			render: (_, record) => (
+				<Tag color={record.disabled ? 'error' : 'success'}>
+					{record.disabled ? '是' : '否'}
+				</Tag>
+			),
 		},
 		{
 			dataIndex: 'readonly',
 			title: '是否只读',
+			render: (_, record) => (
+				<Tag color={record.readonly ? 'error' : 'success'}>
+					{record.readonly ? '是' : '否'}
+				</Tag>
+			),
 		},
 		{
 			title: '操作',
@@ -81,13 +99,28 @@ export default function DictDataPage() {
 					>
 						编辑
 					</Button>
-					<Button type="link" onClick={() => {}}>
-						删除
-					</Button>
+					<Popconfirm
+						title="确认删除?"
+						onConfirm={() => handlerDelete(record)}
+						okText="是"
+						cancelText="否"
+					>
+						<Button type="link" danger>
+							删除
+						</Button>
+					</Popconfirm>
 				</Space>
 			),
 		},
 	]
+
+  const handlerDelete = async (row:DictDataType)=>{
+    const res = await sysDictDataDelete(row.id!)
+    if(res.code === 200){
+      message.success('删除成功')
+      await reset()
+    }
+  }
 
 	// 编辑
 	const addFormroot = (
@@ -156,19 +189,42 @@ export default function DictDataPage() {
 		)
 		await dialog.forOpen(beforeOpen(id, status, record))
 
-		await dialog.open().then((value) => {
-			console.log('submit', value)
-		})
+		await dialog.forConfirm(confirm(id))
 
-		await dialog.forConfirm((payload, next) => {
-			next(payload)
-		})
+		await dialog.open().catch(console.error)
+	}
+
+	const confirm = (id?: string) => {
+		return async (payload: any, next: (payload?: any) => void) => {
+			try {
+				const dict = await payload.submit()
+				await finished(dict, id)
+				next(payload)
+			} catch (e) {
+				console.log(e)
+			}
+		}
+	}
+
+	const finished = async (data: DictDataType, id?: string) => {
+		try {
+			await sysDictDataSave({
+				...data,
+				id,
+				dictCode: searchParams.get('code'),
+				dictId: searchParams.get('id'),
+			})
+			message.success('操作成功')
+			reset()
+		} catch (e) {
+			console.log(e)
+			throw new Error('请求出错')
+		}
 	}
 
 	return (
 		<div className="w-full box-border overflow-y-auto h-full p-4">
 			<div className="bg-[--background] w-full p-4 rounded-md">
-
 				<Button
 					type="primary"
 					className="mb-4"
