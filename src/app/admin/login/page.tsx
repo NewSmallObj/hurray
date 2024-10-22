@@ -1,18 +1,27 @@
 'use client'
 
 import { useDocumentVisibility, useThrottleEffect } from 'ahooks'
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
 import { BASE_STATICPREFIX } from '@/app/utils/stants'
 import { Button, Col, Form, Input, Row, Select, Space } from 'antd'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { login } from '@/app/_api/common/user'
 
 export default function LoginPage() {
 	const [form] = Form.useForm()
+	const router = useRouter()
+	const [loading, setLodaing] = useState(false)
 
 	useThrottleEffect(
 		() => {
 			if (typeof window !== 'undefined') {
 				console.log('login page', window.config)
+				form.setFieldsValue({
+					username: 'superadmin',
+					password: '123456',
+				})
 			}
 		},
 		[],
@@ -20,6 +29,30 @@ export default function LoginPage() {
 			wait: 100,
 		}
 	)
+
+	const submit = async (values: any) => {
+		try {
+			setLodaing(true)
+			const res = await signIn('credentials', {
+				username: values.username,
+				password: values.password,
+				redirect: false,
+			})
+			if (res?.ok) {
+				const res = await login({
+					username: values.username,
+					password: values.password,
+				})
+				console.log(res)
+				router.push('/admin/adm')
+			}
+		} catch (error) {
+		} finally {
+			setTimeout(() => {
+        setLodaing(false)
+      }, 2000);
+		}
+	}
 
 	return (
 		<div className="w-full h-full box-border relative z-10">
@@ -37,22 +70,29 @@ export default function LoginPage() {
 					项目名
 				</div>
 
-				<Form form={form}>
-					<Form.Item name="username"
-            rules={[{ required: true, message: '请输入用户名' }]}
-          >
+				<Form form={form} onFinish={submit}>
+					<Form.Item
+						name="username"
+						rules={[{ required: true, message: '请输入用户名' }]}
+					>
 						<Input placeholder="请输入用户名" />
 					</Form.Item>
-					<Form.Item name="password"
-            rules={[{ required: true, message: '请输入密码' }]}
-          >
+					<Form.Item
+						name="password"
+						rules={[{ required: true, message: '请输入密码' }]}
+					>
 						<Input.Password
 							type="password"
 							placeholder="请输入密码"
 						/>
 					</Form.Item>
 					<Form.Item>
-						<Button block type="primary" onClick={form.submit}>
+						<Button
+							block
+							type="primary"
+							loading={loading}
+							onClick={form.submit}
+						>
 							登录
 						</Button>
 					</Form.Item>
