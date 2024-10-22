@@ -17,17 +17,20 @@ export const GET = async (request: NextRequest) => {
     limit: Number(searchParams.get('limit'))
   }
 
-  const records = await prisma.user.findMany({
+  const records = await prisma.dept.findMany({
     where: {
       name: {
         contains: params.name || undefined
       },
     },
+    orderBy:{
+      sort: 'asc'
+    },
     skip: (params.page - 1) * params.limit,
     take: params.limit,
   })
   
-  const totalRow = await prisma.user.count({
+  const totalRow = await prisma.dept.count({
     where: {
       name: {
         contains: params.name || undefined

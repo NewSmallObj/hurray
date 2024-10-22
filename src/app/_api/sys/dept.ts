@@ -29,9 +29,14 @@ export interface DeptType {
 }
 
 export const getDeptList = async (params: any) => {
+  const {pageSize,current,...values} = params
   const res = await requset<PageData<DeptType>>({
     url:URL.SystemDeptList,
-    params
+    params:{
+      ...values,
+      page:current,
+      limit:pageSize
+    }
   })
   return {
     list:res.data.records,

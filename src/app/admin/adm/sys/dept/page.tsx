@@ -15,6 +15,8 @@ import {
 	Col,
 	Form,
 	Input,
+	message,
+	Popconfirm,
 	Row,
 	Select,
 	Space,
@@ -70,13 +72,24 @@ export default function DeptPage() {
 					>
 						编辑
 					</Button>
-					<Button type="link" onClick={() => {}}>
-						删除
-					</Button>
+					<Popconfirm
+						title="确认删除?"
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
+					>
+            <Button type="link" danger onClick={() => handlerDelete(record)}>
+              删除
+            </Button>
+          </Popconfirm>
 				</Space>
 			),
 		},
 	]
+
+  const  handlerDelete = (row:DeptType)=>{
+    
+  }
 
   const fetchUsers = (field: Field) => {
     field.loading = true;
@@ -174,14 +187,34 @@ export default function DeptPage() {
 		)
 		await dialog.forOpen(beforeOpen(id, status, record))
 
-		await dialog.open().then((value) => {
-			console.log('submit', value)
-		})
+		await dialog.forConfirm(confirm(id))
 
-		await dialog.forConfirm((payload, next) => {
-			next(payload)
-		})
+		await dialog.open().catch(console.error);
 	}
+
+  const confirm = (id?: string) => {
+    return async (payload: any, next: (payload?: any) => void) => {
+      try {
+        const dict = await payload.submit();
+        await finished(dict, id);
+        next(payload);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  };
+  
+  const finished = async (data: DeptType, id?: string) => {
+    try {
+      // await sysDictSave({ ...data, id });
+      message.success('操作成功');
+      reset()
+    } catch (e) {
+      console.log(e);
+      throw new Error('请求出错');
+    }
+  };
+  
 
 	return (
 		<div className="w-full box-border overflow-y-auto h-full p-4">

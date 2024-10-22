@@ -6,7 +6,7 @@ import {
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
-import { getUserList, sysUserFind, UserType } from '@/app/_api/sys/user'
+import { getUserList, sysUserAdd, sysUserFind, UserType } from '@/app/_api/sys/user'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable } from 'ahooks'
@@ -15,6 +15,8 @@ import {
 	Col,
 	Form,
 	Input,
+	message,
+	Popconfirm,
 	Row,
 	Select,
 	Space,
@@ -74,16 +76,24 @@ export default function UserPage() {
 					>
 						编辑
 					</Button>
-          <Button
-						type="link"
-						onClick={()=>{}}
+          <Popconfirm
+						title="确认删除?"
+						onConfirm={() => {}}
+						okText="是"
+						cancelText="否"
 					>
-						删除
-					</Button>
+            <Button type="link" danger onClick={() => handlerDelete(record)}>
+              删除
+            </Button>
+          </Popconfirm>
 				</Space>
 			),
 		},
 	]
+
+  const  handlerDelete = (row:UserType)=>{
+    
+  }
 
 	const fetchRoles = (field: Field) => {
 		field.loading = true
@@ -186,20 +196,35 @@ const beforeOpen = (
 				fetchType,
 			})
 		)
-		await dialog.forOpen(
-			beforeOpen(id,status,record)
-		)
+		await dialog.forOpen(beforeOpen(id, status, record))
 
-		await dialog.open().then((value) => {
-			console.log('submit', value)
-		})
+		await dialog.forConfirm(confirm(id))
 
-		await dialog.forConfirm((payload, next) => {
-			next(payload)
-		})
+		await dialog.open().catch(console.error);
 	}
 
-	
+  const confirm = (id?: string) => {
+    return async (payload: any, next: (payload?: any) => void) => {
+      try {
+        const dict = await payload.submit();
+        await finished(dict, id);
+        next(payload);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  };
+  
+  const finished = async (data: UserType, id?: string) => {
+    try {
+      await sysUserAdd({ ...data, id });
+      message.success('操作成功');
+      reset()
+    } catch (e) {
+      console.log(e);
+      throw new Error('请求出错');
+    }
+  };
 
 	return (
 		<div className="w-full box-border overflow-y-auto h-full p-4">

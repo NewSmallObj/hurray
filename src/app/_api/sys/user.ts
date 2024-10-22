@@ -55,3 +55,12 @@ export const sysUserFind = async (id: string) => {
     url: URL.SystemUserFind + '/' + id
   })
 }
+
+
+export const sysUserAdd = async (params: any)=>{
+  return await requset({
+    url: URL.SystemUserFind,
+    method: params.id ? 'put' : 'post',
+    data: params
+  })
+}

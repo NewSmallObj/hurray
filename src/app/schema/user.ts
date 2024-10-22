@@ -40,7 +40,7 @@ export const USER_SCHEMA = {
     deptId: {
       type: 'string',
       title: '部门',
-      required: true,
+      required: false,
       'x-decorator': 'FormItem',
       'x-read-pretty': '{{readOnly}}',
       'x-component': 'Select',
@@ -49,13 +49,13 @@ export const USER_SCHEMA = {
         placeholder: '请选择部门',
         showSearch: true,
         optionFilterProp: 'label',
-        allowClear: true
+        allowClear: true,
       },
     },
     type: {
       type: 'number',
       title: '类型',
-      required: true,
+      required: false,
       'x-decorator': 'FormItem',
       enum: [],
       'x-read-pretty': '{{readOnly}}',
