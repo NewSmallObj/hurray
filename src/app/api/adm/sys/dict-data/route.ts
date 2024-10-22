@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export const POST = async (request: Request) => {
   const body = await request.json()
 
-  const {dictId,...dict_datas} = body
+  const {dictId,dictCode,...dict_datas} = body
 
   await prisma.dict.update({
     where:{
@@ -12,7 +12,10 @@ export const POST = async (request: Request) => {
     },
     data: {
       dict_datas:{
-        create: dict_datas
+        create: {
+          ...dict_datas,
+          dict_code:dictCode
+        }
       }
     },
     include:{

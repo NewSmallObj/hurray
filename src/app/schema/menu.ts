@@ -48,7 +48,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入名称',
         allowClear: true,
-        maxlength: 100,
+        maxLength: 100,
       },
     },
     routePath: {
@@ -61,7 +61,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入路由地址',
         allowClear: true,
-        maxlength: 100,
+        maxLength: 100,
       },
     },
     pagePath: {
@@ -74,7 +74,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入组件地址',
         allowClear: true,
-        maxlength: 100,
+        maxLength: 100,
       },
     },
     icon: {
@@ -108,7 +108,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入权限',
         allowClear: true,
-        maxlength: 100,
+        maxLength: 100,
       },
     },
     includePermissionCode: {
@@ -121,7 +121,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入附加权限',
         allowClear: true,
-        maxlength: 2000,
+        maxLength: 2000,
       },
     },
     remark: {
@@ -134,7 +134,7 @@ export const MENU_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入描述信息',
         allowClear: true,
-        maxlength: 2000,
+        maxLength: 2000,
       },
     },
     sort: {

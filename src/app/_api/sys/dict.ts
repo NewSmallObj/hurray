@@ -115,20 +115,16 @@ export const getDictDataList = async (params: any) => {
     }
   })
   return {
-    list:res.data.records.map((v)=>({...v,dictCode:params.dict_code})),
+    list:res.data.records,
     total:res.data.totalRow
   }
 }
 
 export const sysDictDataSave = async (params: any) => {
-  const {dictCode,...values} = params
   return await requset<DictDataType>({
     url: URL.SystemDictData,
     method: params.id ? 'put' : 'post',
-    data: {
-      ...values,
-      dict_code: dictCode
-    }
+    data: params
   })
 }
 

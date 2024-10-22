@@ -11,6 +11,7 @@ import { FormItem,
 import { createSchemaField, FormProvider, ISchema, Schema } from '@formily/react'
 import { Button, ConfigProvider } from 'antd'
 import { createForm } from '@formily/core';
+import SelectIcon from '@/app/components/SelectIcon'
 import zhCN from 'antd/locale/zh_CN'
 
 
@@ -27,6 +28,7 @@ export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
       Switch,
       NumberPicker,
       TreeSelect,
+      SelectIcon
     },
     scope:{
       ...scope

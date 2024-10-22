@@ -3,7 +3,6 @@ import prisma from '@/app/libs/prisma';
 import { ResponseSuccess } from "@/app/api/response/success";
 
 interface Params {
-  dictId:string
   page: number;
   limit: number;
 }
@@ -12,26 +11,22 @@ export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url)
   
   const params: Params = {
-    dictId: searchParams.get('dictId')!,
     page: Number(searchParams.get('page')),
     limit: Number(searchParams.get('limit'))
   }
 
-  const records = await prisma.dict.findFirst({
-    where:{
-      id:params.dictId
-    },
+  const records = await prisma.menu.findMany({
     skip: (params.page - 1) * params.limit,
     take: params.limit,
-    include:{
-      dict_datas:true
-    },
+    orderBy:{
+      sort: 'asc'
+    }
   })
   
-  const totalRow = await prisma.user.count()
-
+  const totalRow = await prisma.menu.count()
+  
   return ResponseSuccess({
-    records:records?.dict_datas.map((v)=>({...v,dictCode:v.dict_code})) || [],
+    records,
     totalRow
   })
   

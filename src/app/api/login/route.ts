@@ -39,12 +39,30 @@ export const POST = async (request: Request) => {
   
   const dict = await prisma.dict.findMany({
     where:{
-      login_return:true
+      login_return:true,
+      disabled:false
+    },
+    orderBy:{
+      sort:'asc'
+    },
+    include:{
+      dict_datas:{
+        where:{
+          disabled:false
+        },
+        orderBy:{
+          sort:'asc'
+        }
+      }
     }
   })
   
   return ResponseSuccess({
-    infra:{dict,menu,route:null,user:{...user,password:null,permissionCodes}}
+    infra:{
+      dict:dict.map((v)=>({[v.code]:v.dict_datas})),
+      menu,
+      route:null,
+      user:{...user,password:null,permissionCodes}}
   })
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Button,
 	Col,
@@ -11,13 +11,30 @@ import {
 	Select,
 	Space,
 	TableColumnType,
+	Tag,
+	Popconfirm,
+	message,
 } from 'antd'
-import { useAntdTable } from 'ahooks'
+import { useAntdTable, useThrottleEffect } from 'ahooks'
 import { FormDialog } from '@formily/antd-v5'
 import SchemaForm from '@/app/components/SchemaForm/index'
 import { Field, IFormProps } from '@formily/core'
 import { MENU_SCHEMA } from '@/app/schema/menu'
-import { PAGE_SYS_MENU } from '@/app/utils/stants'
+import {
+	PAGE_SYS_MENU,
+	StatusOperation,
+	statusOperation,
+} from '@/app/utils/stants'
+import {
+	MenuType,
+	sysMenuDelete,
+	sysMenuSave,
+	sysMenuTree,
+	sysMenuUpdate,
+} from '@/app/_api/sys/menu'
+import { find, get } from 'lodash'
+import { arrayToTree, arrayToTree2, treeToArray } from '@/app/utils/utils'
+import AntdIcon from '@/app/components/AntdIcon/index'
 
 const { Option } = Select
 
@@ -35,133 +52,280 @@ interface Result {
 	list: Item[]
 }
 
-const getTableData = (
-	{ current, pageSize }:any,
-	formData: Object
-): Promise<Result> => {
-	let query = `page=${current}&size=${pageSize}`
-	Object.entries(formData).forEach(([key, value]) => {
-		if (value) {
-			query += `&${key}=${value}`
-		}
-	})
+const MENUTYPE = [
+	{
+		label: '目录',
+		value: 1,
+	},
+	{
+		label: '菜单',
+		value: 2,
+	},
+	{
+		label: '按钮',
+		value: 3,
+	},
+]
 
-	return fetch(`https://randomuser.me/api?results=55&${query}`)
-		.then((res) => res.json())
-		.then((res) => ({
-			total: res.info.results,
-			list: res.results,
-		}))
-}
 export default function MenuPage() {
-	const [form] = Form.useForm()
+	const [tableData, setTableData] = useState<MenuType[]>([])
+	const [loading, setLoading] = useState(false)
 
-	const { tableProps, search, params } = useAntdTable(getTableData, {
-		defaultPageSize: 5,
-		cacheKey: PAGE_SYS_MENU,
-		form,
-	})
+	useThrottleEffect(
+		() => {
+			getsysMenuTree()
+		},
+		[],
+		{ wait: 500 }
+	)
 
-	const { type, changeType, submit, reset } = search
-
-  const fetchMenuTree = (field:Field)=>{
-    // const list = treeToArray(tableData.value.list,'0').map((v)=>({...v,label:v.name,value:v.id}))
-    
-    field.loading = true
-    field.dataSource = [...tableProps.dataSource] // {label:"-",value:'0',children:arrayToTree(list)}
-    field.loading = false
-  }
-
-	const hanlder = async () => {
-		const dialog = await FormDialog(
-			'编辑',
-			SchemaForm(MENU_SCHEMA, {
-				readOnly: true,
-        fetchMenuTree
-			})
-		)
-		await dialog.forOpen((payload:IFormProps, next:(props?: IFormProps) => Promise<any>) => {
-			next({
-        initialValues: {
-          aaa: '123',
-        },
-      })
-		})
-		
-		await dialog.open().then((value) => {
-			console.log('submit', value)
-		})
-
-    await dialog.forConfirm((payload, next) => {
-			next(payload)
-		})
+	const getsysMenuTree = async () => {
+		try {
+			setLoading(true)
+			const res = await sysMenuTree()
+      if(res.code === 200){
+        setTableData(res.data)
+      }
+		} catch (error) {
+		} finally {
+			setLoading(false)
+		}
 	}
 
-	const columns: TableColumnType[] = [
+	const fetchMenuTree = (field: Field) => {
+		let list = treeToArray(tableData || [], '0')
+    list = list.map((v) => ({
+			...v,
+			label: v.name,
+			value: v.id,
+		}))
+
+		field.loading = true
+		field.dataSource = [
+			{ label: '-', value: '0', children: arrayToTree2(list,'0') || [] },
+		]
+		field.loading = false
+	}
+
+	const columns: TableColumnType<MenuType>[] = [
 		{
-			title: 'name',
-			dataIndex: ['name', 'last'],
+			title: '名称',
+			dataIndex: 'name',
 		},
 		{
-			title: 'email',
-			dataIndex: 'email',
+			dataIndex: 'icon',
+			title: '图标',
+			render: (_, record) => <AntdIcon name={record.icon} />,
 		},
 		{
-			title: 'phone',
-			dataIndex: 'phone',
-		},
-		{
-			title: 'gender',
-			dataIndex: 'gender',
-		},
-		{
-			title: 'opreation',
+			dataIndex: 'type',
+			title: '类型',
 			render: (_, record) => (
-				<Button type="link" onClick={() => hanlder()}>
-					edit
-				</Button>
+				<Tag>
+					{get(find(MENUTYPE, ['value', record.type]), 'label', '-')}
+				</Tag>
+			),
+		},
+		{
+			dataIndex: 'routePath',
+			title: '路由地址',
+		},
+		{
+			dataIndex: 'permissionCode',
+			title: '权限',
+		},
+		{
+			dataIndex: 'disabled',
+			title: '是否禁用',
+			render: (_, record) => (
+				<Tag color={record.disabled ? 'error' : 'success'}>
+					{record.disabled ? '是' : '否'}
+				</Tag>
+			),
+		},
+		{
+			dataIndex: 'sort',
+			title: '排序',
+		},
+		{
+			title: '操作',
+			render: (_, record) => (
+				<Space>
+					<Button
+						type="link"
+						onClick={() => hanlder(record.id, 'add', record)}
+					>
+						新增
+					</Button>
+					<Button
+						type="link"
+						onClick={() => hanlder(record.id, 'edit', record)}
+					>
+						编辑
+					</Button>
+					<Popconfirm
+						title="确认删除?"
+						onConfirm={() => handlerDelete(record)}
+						okText="是"
+						cancelText="否"
+					>
+						<Button
+							type="link"
+							danger
+						>
+							删除
+						</Button>
+					</Popconfirm>
+				</Space>
 			),
 		},
 	]
 
+	const handlerDelete = async (row: MenuType) => {
+		const res = await sysMenuDelete(row.id!)
+		if (res.code === 200) {
+			message.success('删除成功')
+			await getsysMenuTree()
+		}
+	}
+
+	const addFormChild = (
+		id?: string,
+		status?: StatusOperation,
+		record?: MenuType
+	) => {
+		if (id && status === 'add') {
+			return {
+				pid: id,
+				sort: 1,
+				type: 1,
+			}
+		}
+	}
+
+	const addFormroot = (
+		id?: string,
+		status?: StatusOperation,
+		record?: MenuType
+	) => {
+		if (!id && !status && !record) {
+			return {
+				pid: '0',
+				sort: 1,
+				type: 1,
+			}
+		}
+	}
+
+	const editForm = (
+		id?: string,
+		status?: StatusOperation,
+		record?: MenuType
+	) => {
+		if (id && status && ['edit', 'view'].includes(status)) {
+			return record
+		}
+	}
+
+	const beforeOpen = (
+		id?: string,
+		status?: StatusOperation,
+		record?: MenuType
+	) => {
+		return async (
+			payload: IFormProps,
+			next: (props?: IFormProps) => Promise<any>
+		) => {
+			next({
+				initialValues:
+					addFormChild(id, status, record) ??
+					addFormroot(id, status, record) ??
+					editForm(id, status, record),
+			})
+		}
+	}
+
+	const hanlder = async (
+		id?: string,
+		status?: StatusOperation,
+		record?: MenuType
+	) => {
+		const dialog = await FormDialog(
+			{
+				title: statusOperation[status!],
+				maskClosable: false,
+				footer: status === 'view' ? true : undefined,
+			},
+			SchemaForm(MENU_SCHEMA, {
+				readOnly: Boolean(status === 'view'),
+				fetchMenuTree,
+			})
+		)
+		await dialog.forOpen(beforeOpen(id, status, record))
+
+		await dialog.forConfirm(confirm(id, status))
+
+		await dialog.open().catch(console.error)
+	}
+
+	const confirm = (id?: string, status?: StatusOperation) => {
+		return async (payload: any, next: (payload?: any) => void) => {
+			try {
+				const dict = await payload.submit()
+				await finished(dict, id, status)
+				next(payload)
+			} catch (e) {
+				console.log(e)
+			}
+		}
+	}
+
+	const finished = async (
+		data: MenuType,
+		id?: string,
+		status?: StatusOperation
+	) => {
+		try {
+			if (!id) {
+				await sysMenuSave({
+					...data,
+				})
+			}
+			if (status === 'add') {
+				await sysMenuSave(data)
+			}
+			if (status === 'edit') {
+				await sysMenuUpdate({
+					...data,
+					id,
+				})
+			}
+			message.success('操作成功')
+			getsysMenuTree()
+		} catch (e) {
+			console.log(e)
+			throw new Error('请求出错')
+		}
+	}
+
 	return (
 		<div className="w-full box-border overflow-y-auto h-full p-4">
-			<div className="bg-[--background] w-full p-4 pb-0 rounded-md mb-4">
-				<Form form={form}>
-					<Row gutter={24}>
-						<Col span={6}>
-							<Form.Item label="name" name="name">
-								<Input placeholder="name" />
-							</Form.Item>
-						</Col>
-						<Col span={6}>
-							<Form.Item label="email" name="email">
-								<Input placeholder="email" />
-							</Form.Item>
-						</Col>
-						<Col span={6}>
-							<Form.Item label="phone" name="phone">
-								<Input placeholder="phone" />
-							</Form.Item>
-						</Col>
-						<Col span={6}>
-							<Space>
-								<Button type="primary" onClick={submit}>
-									搜索
-								</Button>
-								<Button onClick={reset}>重置</Button>
-							</Space>
-						</Col>
-					</Row>
-				</Form>
-			</div>
-
 			<div className="bg-[--background] w-full p-4 rounded-md">
+				<Button
+					type="primary"
+					className="mb-4"
+					onClick={() => hanlder()}
+				>
+					新增
+				</Button>
+
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
-					{...tableProps}
+					dataSource={tableData}
+					pagination={false}
+          loading={loading}
 				/>
 			</div>
 		</div>
