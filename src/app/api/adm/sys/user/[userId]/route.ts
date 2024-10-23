@@ -1,3 +1,4 @@
+import { ResponseSuccess } from '@/app/api/response/success';
 import prisma from '@/app/libs/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,5 +16,5 @@ export const GET = async (request: NextRequest,
     },
   })
   
-  return NextResponse.json(user)
+  return ResponseSuccess(user)
 }

@@ -24,20 +24,28 @@ export async function GET(request: Request) {
     limit: Number(searchParams.get('limit'))
   }
 
+  const user_dept = params.deptId ? {
+    some: {
+      dept_id: params.deptId || undefined
+    }
+  } :{}
+
+  const user_role = params.roleId ? {
+    some: {
+      role_id: params.roleId || undefined
+    }
+  } :{}
+
   const records = await prisma.user.findMany({
     where: {
       name: {
         contains: params.name || undefined
       },
       user_dept: {
-        some: {
-          dept_id: params.deptId || undefined
-        }
+        ...user_dept
       },
       user_role: {
-        some: {
-          role_id: params.roleId || undefined
-        }
+        ...user_role
       },
       disabled: params.disabled || undefined
     },
@@ -56,27 +64,24 @@ export async function GET(request: Request) {
       }
     }
   })
+  
   const totalRow = await prisma.user.count({
     where: {
       name: {
         contains: params.name || undefined
       },
       user_dept: {
-        some: {
-          dept_id: params.deptId || undefined
-        }
+        ...user_dept
       },
       user_role: {
-        some: {
-          role_id: params.roleId || undefined
-        }
+        ...user_role
       },
       disabled: params.disabled || undefined
     }
   })
 
   return ResponseSuccess({
-    records,
+    records:records.map((item)=>({...item})),
     totalRow
   })
 }

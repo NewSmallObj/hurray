@@ -42,7 +42,7 @@ export default function UserPage() {
 		},
 		{
 			title: '姓名',
-			dataIndex: ['name', 'last'],
+			dataIndex: 'name',
 		},
 		{
 			title: '手机',

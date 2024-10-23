@@ -39,9 +39,14 @@ export interface UserType {
 }
 
 export const getUserList = async (params: any) => {
+  const {pageSize,current,...values} = params
   const res = await requset<PageData<UserType>>({
     url:URL.SystemUser,
-    params
+    params:{
+      ...values,
+      page:current,
+      limit:pageSize
+    }
   })
   return {
     list:res.data.records,
