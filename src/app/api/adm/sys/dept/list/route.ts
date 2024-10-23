@@ -28,6 +28,9 @@ export const GET = async (request: NextRequest) => {
     },
     skip: (params.page - 1) * params.limit,
     take: params.limit,
+    include:{
+      leader:true
+    }
   })
   
   const totalRow = await prisma.dept.count({
@@ -38,8 +41,9 @@ export const GET = async (request: NextRequest) => {
     }
   })
 
+  const list = records.map((item)=>({...item,leader:item.leader?.name,simpleName:item.simple_name}))
   return ResponseSuccess({
-    records,
+    records:list,
     totalRow
   })
   

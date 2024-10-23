@@ -1,3 +1,4 @@
+import { ResponseSuccess } from '@/app/api/response/success';
 import prisma from '@/app/libs/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -13,7 +14,27 @@ export const GET = async (request: NextRequest,
     where: {
       id: params.deptId
     },
+    include:{
+      leader:true
+    }
   })
   
-  return NextResponse.json(user)
+  return ResponseSuccess({
+    ...user,
+    leader:user?.leader?.id,
+    simpleName:user?.simple_name  
+  })
+}
+
+
+export const DELETE = async (request: Request,
+  { params }: { params: Params }
+  ) => {
+  await prisma.dept.delete({
+    where: {
+      id: params.deptId
+    },
+  })
+
+  return ResponseSuccess(null)
 }

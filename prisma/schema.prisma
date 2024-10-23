@@ -28,6 +28,7 @@ model User {
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
   user_role     UserRole[]      
   user_dept     UserDept[] 
+  dept          Dept[]
   @@map(name: "users")
 }
 
@@ -91,8 +92,9 @@ model Dept {
   id            String       @default(cuid()) @id
   pid           String       @db.VarChar(50)
   name          String       @db.VarChar(50)
-  leader        User         @relation(fields: [leader_id], references: [id])
-  leader_id     String
+  code          String       @db.VarChar(50)
+  leader        User?        @relation(fields: [leader_id], references: [id])
+  leader_id     String?
   simple_name   String?      @db.VarChar(50)
   status        Boolean?     @default(false)
   sort          Int          @default(0)

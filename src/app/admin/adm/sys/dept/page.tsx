@@ -7,7 +7,7 @@ import {
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
-import { getDeptList, sysDeptFind, DeptType, sysDeptSave } from '@/app/_api/sys/dept'
+import { getDeptList, sysDeptFind, DeptType, sysDeptSave, sysDeptDelete } from '@/app/_api/sys/dept'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable } from 'ahooks'
@@ -75,11 +75,11 @@ export default function DeptPage() {
 					</Button>
 					<Popconfirm
 						title="确认删除?"
-						onConfirm={() => {}}
+						onConfirm={() => handlerDelete(record)}
 						okText="是"
 						cancelText="否"
 					>
-            <Button type="link" danger onClick={() => handlerDelete(record)}>
+            <Button type="link" danger>
               删除
             </Button>
           </Popconfirm>
@@ -88,8 +88,12 @@ export default function DeptPage() {
 		},
 	]
 
-  const handlerDelete = (row:DeptType)=>{
-    
+  const handlerDelete = async (row:DeptType)=>{
+    const res = await sysDeptDelete(row.id!)
+    if(res.code === 200){
+      message.success('删除成功')
+      await reset()
+    }
   }
 
   const fetchUsers = (field: Field) => {
@@ -232,16 +236,6 @@ export default function DeptPage() {
 						<Col span={6}>
 							<Form.Item label="关键字" name="name">
 								<Input placeholder="请输入关键字" />
-							</Form.Item>
-						</Col>
-						<Col span={6}>
-							<Form.Item label="角色" name="roleId">
-								<Select placeholder="请选择角色" />
-							</Form.Item>
-						</Col>
-						<Col span={6}>
-							<Form.Item label="部门" name="deptId">
-								<Select placeholder="请选择部门" />
 							</Form.Item>
 						</Col>
 						<Col span={6}>

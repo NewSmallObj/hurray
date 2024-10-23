@@ -59,4 +59,9 @@ export const sysDeptFind = async (id: string) => {
   })
 }
 
-
+export const sysDeptDelete = async (id: string) => {
+  return await requset({
+    url: URL.SystemDept + '/' + id,
+    method: 'delete'
+  })
+}
