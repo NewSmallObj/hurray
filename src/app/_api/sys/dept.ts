@@ -45,6 +45,14 @@ export const getDeptList = async (params: any) => {
 }
 
 
+export const sysDeptSave = async (params: any) => {
+  return await requset({
+    url: URL.SystemDept,
+    method: params.id ? 'put' : 'post',
+    data: params
+  })
+}
+
 export const sysDeptFind = async (id: string) => {
   return await requset<DeptType>({
     url: URL.SystemDept + '/' + id

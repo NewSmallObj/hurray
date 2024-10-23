@@ -7,6 +7,8 @@ export const PAGE_SYS_DEPT = "PAGE_SYS_DEPT"
 export const PAGE_SYS_DICT = "PAGE_SYS_DICT"
 export const PAGE_SYS_DICT_DATA = "PAGE_SYS_DICT_DATA"
 
+export const LOCALSTORAGE = "HURRAY_LOCALSTORAGE"
+
 export const BASE_STATICPREFIX = ""
 
 

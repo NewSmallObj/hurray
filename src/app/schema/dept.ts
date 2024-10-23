@@ -11,7 +11,7 @@ export const DEPT_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入名称',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
       'x-validator': [
         {
@@ -31,7 +31,7 @@ export const DEPT_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入简称',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
     type: {
@@ -39,7 +39,7 @@ export const DEPT_SCHEMA = {
       title: '类型',
       required: true,
       'x-decorator': 'FormItem',
-      enum: [],
+      'x-reactions': '{{fetchType}}',
       'x-read-pretty': '{{readOnly}}',
       'x-component': 'Select',
       'x-component-props': {
@@ -102,7 +102,7 @@ export const DEPT_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入编码',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
     pid: {
@@ -120,7 +120,7 @@ export const DEPT_SCHEMA = {
         placeholder: '请输入备注',
         type: 'textarea',
         allowClear: true,
-        maxlength: 200,
+        maxLength: 200,
         showCount: true,
       },
     },

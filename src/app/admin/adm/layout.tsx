@@ -6,6 +6,8 @@ import {
 	Breadcrumb,
 	ConfigProvider,
 	Layout,
+	message,
+	Spin,
 	Splitter,
 	Tabs,
 	theme,
@@ -18,22 +20,48 @@ import clsx from 'clsx'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import LayoutHeader from './components/Header/index'
 import LayoutSider from './components/Sider/index'
-import { useSessionStorageState, useThrottleEffect } from 'ahooks'
-import { LAYOUTTAGS } from '@/app/utils/stants'
+import {
+	useLocalStorageState,
+	useSessionStorageState,
+	useThrottleEffect,
+} from 'ahooks'
+import { LAYOUTTAGS, LOCALSTORAGE } from '@/app/utils/stants'
 import { findIndex, get, last, omit } from 'lodash'
+import useUser from '@/app/store/useUser'
+import { signOut } from 'next-auth/react'
+const Panel = Splitter.Panel
 
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
-  
 	const { collapse } = useCollapse()
 	const { currentTheme } = useTheme()
 	const pathname = usePathname()
 	const params = useParams()
 	const router = useRouter()
 	const [activeKey, setActiveKey] = useState('')
+	const { setCurrentUser, setDic, setMenuTree, setPermsList } = useUser()
+	const [userData, setUserData] = useLocalStorageState<any>(LOCALSTORAGE)
+	const [spinning, setSpinning] = useState(true)
+
+	useThrottleEffect(
+		() => {
+			if (!userData) {
+				message.warning('登陆失效')
+				signOut()
+				return router.replace('/admin/login')
+			}
+			setCurrentUser(userData.user)
+			setDic(userData.infra.dict)
+			setMenuTree(userData.infra.menu)
+			setPermsList(userData.infra.user?.permissionCodes || [])
+      setSpinning(false)
+		},
+		[userData],
+		{ wait: 100 }
+	)
 
 	const [layoutTags, setLayoutTags] = useSessionStorageState(LAYOUTTAGS, {
 		defaultValue: {},
@@ -53,7 +81,7 @@ export default function RootLayout({
 
 	useThrottleEffect(
 		() => {
-      if(pathname === '/admin/adm') return
+			if (pathname === '/admin/adm') return
 			setLayoutTags({
 				...layoutTags,
 				[pathname]: params,
@@ -72,7 +100,7 @@ export default function RootLayout({
 
 	const onChange = (newActiveKey: string) => {
 		setActiveKey(newActiveKey)
-    router.push(newActiveKey)
+		router.push(newActiveKey)
 	}
 
 	const onEdit = (targetKey: any, action: 'add' | 'remove') => {
@@ -82,19 +110,16 @@ export default function RootLayout({
 	}
 
 	const remove = (targetKey: string) => {
-		
-    if(pathname === targetKey){
-      const index = findIndex(tags, (item: any) => item.key === targetKey)
-      const item = tags[index - 1]
-      if(item){
-        onChange(item.key)
-      }
-    }
+		if (pathname === targetKey) {
+			const index = findIndex(tags, (item: any) => item.key === targetKey)
+			const item = tags[index - 1]
+			if (item) {
+				onChange(item.key)
+			}
+		}
 
-    setLayoutTags({ ...omit(layoutTags!, [targetKey]) })
+		setLayoutTags({ ...omit(layoutTags!, [targetKey]) })
 	}
-
-  
 
 	return (
 		<ConfigProvider
@@ -102,23 +127,34 @@ export default function RootLayout({
 			theme={{
 				algorithm,
 				token: {
-          ...themeValues[currentTheme].token,
-        },
+					...themeValues[currentTheme].token,
+				},
 			}}
-      // button={{ style: { borderRadius: 99 } }}
+			// button={{ style: { borderRadius: 99 } }}
 			locale={zhCN}
 		>
-			<Splitter layout="vertical" className="w-full h-full box-border">
-				<Splitter.Panel max={50} defaultSize={50}>
-					<LayoutHeader />
-				</Splitter.Panel>
-				<Splitter.Panel>
-					<Splitter layout="horizontal">
-						<Splitter.Panel defaultSize={200} max={200}>
-							<LayoutSider />
-						</Splitter.Panel>
-						<Splitter.Panel>
-							{/* <div className={
+			<Spin spinning={spinning} percent={"auto"} fullscreen />
+			<div className={clsx(`w-full h-full box-border`,{
+        hidden: spinning
+      })}>
+				<Splitter
+					layout="vertical"
+					className={clsx(`w-screen h-screen box-border`)}
+				>
+					<Panel max={50} defaultSize={50}>
+						<LayoutHeader />
+					</Panel>
+					<Panel>
+						<Splitter>
+							<Panel
+								className={clsx(`min-w-[200px]`)}
+								defaultSize={200}
+								max={200}
+							>
+								<LayoutSider />
+							</Panel>
+							<Panel>
+								{/* <div className={
                 clsx(`w-full h-full flex flex-col items-start justify-start box-border p-2`,{
                   "bg-gray-100": currentTheme !== 'dark'
                 })
@@ -137,13 +173,14 @@ export default function RootLayout({
                   {children}
                 </div>
 							</div> */}
-              <div className='w-full h-full bg-base-200 box-border'>
-                {children}
-              </div>
-						</Splitter.Panel>
-					</Splitter>
-				</Splitter.Panel>
-			</Splitter>
+								<div className="w-full h-full bg-base-200 box-border">
+									{children}
+								</div>
+							</Panel>
+						</Splitter>
+					</Panel>
+				</Splitter>
+			</div>
 		</ConfigProvider>
 	)
 }

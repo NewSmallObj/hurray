@@ -1,18 +1,21 @@
 'use client'
 
-import { useDocumentVisibility, useThrottleEffect } from 'ahooks'
+import { useDocumentVisibility, useLocalStorageState, useThrottleEffect } from 'ahooks'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
-import { BASE_STATICPREFIX } from '@/app/utils/stants'
+import { BASE_STATICPREFIX, LOCALSTORAGE } from '@/app/utils/stants'
 import { Button, Col, Form, Input, Row, Select, Space } from 'antd'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/app/_api/common/user'
+import useUser from '@/app/store/useUser'
 
 export default function LoginPage() {
 	const [form] = Form.useForm()
 	const router = useRouter()
-	const [loading, setLodaing] = useState(false)
+	const [loading, setLodaing] = useState(false);
+
+  const [ userData,setUserData ] = useLocalStorageState(LOCALSTORAGE)
 
 	useThrottleEffect(
 		() => {
@@ -43,7 +46,9 @@ export default function LoginPage() {
 					username: values.username,
 					password: values.password,
 				})
-				console.log(res)
+
+				// console.log(res.data)
+        setUserData(res.data)
 				router.push('/admin/adm')
 			}
 		} catch (error) {

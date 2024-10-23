@@ -22,7 +22,7 @@ export default withAuth(
 
 export const config = { 
   matcher: [
-    // "/admin/adm/:path*", // 拦截category下的所有路由 没有登录权限将跳转值 signIn 页面
+    "/admin/adm/:path*", // 拦截category下的所有路由 没有登录权限将跳转值 signIn 页面
   ]
 };
 

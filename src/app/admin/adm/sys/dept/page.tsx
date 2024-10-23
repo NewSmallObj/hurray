@@ -1,12 +1,13 @@
 'use client'
 import SchemaForm from '@/app/components/SchemaForm/index'
 import { DEPT_SCHEMA } from '@/app/schema/dept'
+import useUser from '@/app/store/useUser'
 import {
 	PAGE_SYS_DEPT,
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
-import { getDeptList, sysDeptFind, DeptType } from '@/app/_api/sys/dept'
+import { getDeptList, sysDeptFind, DeptType, sysDeptSave } from '@/app/_api/sys/dept'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable } from 'ahooks'
@@ -26,7 +27,7 @@ import {
 
 export default function DeptPage() {
 	const [form] = Form.useForm()
-
+  const { dic } = useUser()
 	const { tableProps, search, params } = useAntdTable(getDeptList, {
 		manual: false,
 		defaultPageSize: 5,
@@ -87,7 +88,7 @@ export default function DeptPage() {
 		},
 	]
 
-  const  handlerDelete = (row:DeptType)=>{
+  const handlerDelete = (row:DeptType)=>{
     
   }
 
@@ -98,6 +99,12 @@ export default function DeptPage() {
   
     field.loading = false;
   };
+
+  const fetchType = (field:Field)=>{
+    field.loading = true
+    field.dataSource = dic.DEPT_TYPE;
+    field.loading = false;
+  }
 
 	// 编辑
 	const addFormroot = (
@@ -182,7 +189,8 @@ export default function DeptPage() {
 			SchemaForm(DEPT_SCHEMA, {
 				readOnly: Boolean(status === 'view'),
 				usernameReadOnly: Boolean(status === 'view') || id,
-        fetchUsers
+        fetchUsers,
+        fetchType
 			})
 		)
 		await dialog.forOpen(beforeOpen(id, status, record))
@@ -206,7 +214,7 @@ export default function DeptPage() {
   
   const finished = async (data: DeptType, id?: string) => {
     try {
-      // await sysDictSave({ ...data, id });
+      await sysDeptSave({ ...data, id });
       message.success('操作成功');
       reset()
     } catch (e) {

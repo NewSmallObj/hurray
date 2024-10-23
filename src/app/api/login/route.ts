@@ -56,14 +56,20 @@ export const POST = async (request: Request) => {
       }
     }
   })
+
+  const dic:any = {};
+  dict.forEach((v)=>{
+    dic[v.code] = v.dict_datas
+  })
   
   return ResponseSuccess({
     infra:{
-      dict:dict.map((v)=>({[v.code]:v.dict_datas})),
+      dict:dic,
       menu,
       route:null,
-      user:{...user,password:null,permissionCodes}}
-  })
+    },
+    user:{...user,password:null,permissionCodes}}
+  )
 }
 
  // 查询角色下对应的所有菜单ids
