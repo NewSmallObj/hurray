@@ -6,7 +6,7 @@ export const MENU_SCHEMA = {
       title: '父级',
       required: true,
       // 'x-hidden': '{{showPid}}',
-      enum:[{}],
+      enum: [{}],
       'x-decorator': 'FormItem',
       'x-component': 'TreeSelect',
       'x-read-pretty': true,
@@ -16,7 +16,7 @@ export const MENU_SCHEMA = {
       type: 'string',
       title: '类型',
       required: false,
-      enum:  [
+      enum: [
         { label: '目录', value: 1 },
         { label: '菜单', value: 2 },
         { label: '按钮', value: 3 },

@@ -6,6 +6,7 @@ import { FormItem,
   Select,
   PreviewText,
   Switch,
+  SelectTable,
   NumberPicker,
   TreeSelect } from '@formily/antd-v5'
 import { createSchemaField, FormProvider, ISchema, Schema } from '@formily/react'
@@ -28,6 +29,7 @@ export default function SchemaForm(schema:Partial<ISchema>,scope?: any) {
       Switch,
       NumberPicker,
       TreeSelect,
+      SelectTable,
       SelectIcon
     },
     scope:{

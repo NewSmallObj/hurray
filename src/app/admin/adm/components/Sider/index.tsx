@@ -38,6 +38,13 @@ export default function LayoutSider(){
           name: "部门管理",
           pid: 1,
           id: 14,
+        },
+        {
+          path: '/admin/adm/sys/role',
+          icon: '',
+          name: "角色管理",
+          pid: 1,
+          id: 15,
         }
       ],
     }

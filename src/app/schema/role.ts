@@ -1,4 +1,4 @@
-export const DICT_SCHEMA = {
+export const ROLE_SCHEMA = {
   type: 'object',
   properties: {
     name: {
@@ -82,21 +82,40 @@ export const DICT_SCHEMA = {
         min: 0,
       },
     },
-    disabled: {
-      type: 'string',
-      title: '是否禁用',
+    menuIds: {
+      type: 'array',
+      title: '菜单权限',
       required: false,
       'x-decorator': 'FormItem',
       'x-read-pretty': '{{readOnly}}',
-      'x-component': 'Switch',
+      'x-component': 'SelectTable',
+      'x-reactions': '{{fetchMenuTree}}',
+      'x-component-props': {
+        bordered: false,
+        showSearch: true,
+        primaryKey: 'id',
+        isTree: true,
+        filterOption: (input: String, option: any) =>
+          option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+        filterSort: (optionA: any, optionB: any) =>
+          optionA.name
+            .toLowerCase()
+            .localeCompare(optionB.name.toLowerCase()),
+        optionAsValue: false, // 返回整行数据
+        rowSelection: {
+          checkStrictly: false,
+        },
+        pagination:false
+      },
+      enum:[],
+      properties: {
+        name: {
+          title: '名称',
+          type: 'string',
+          'x-component': 'SelectTable.Column',
+        },
+      },
+
     },
-    loginReturn: {
-      type: 'string',
-      title: '登陆返回',
-      required: false,
-      'x-decorator': 'FormItem',
-      'x-read-pretty': '{{readOnly}}',
-      'x-component': 'Switch',
-    }
   }
 };

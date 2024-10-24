@@ -21,7 +21,7 @@ export const DICT_DATA_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入名称',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
     value: {
@@ -44,7 +44,7 @@ export const DICT_DATA_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入值',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
     remark: {
@@ -57,7 +57,7 @@ export const DICT_DATA_SCHEMA = {
       'x-component-props': {
         placeholder: "请输入描述",
         allowClear: true,
-        maxlength: 200
+        maxLength: 200
       },
     },
     sort: {

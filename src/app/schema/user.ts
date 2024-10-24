@@ -21,7 +21,7 @@ export const USER_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入名称',
         allowClear: true,
-        maxlength: 30,
+        maxLength: 30,
       },
     },
     name: {
@@ -34,7 +34,7 @@ export const USER_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入姓名',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
     deptId: {
@@ -85,7 +85,7 @@ export const USER_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入手机',
         allowClear: true,
-        maxlength: 50,
+        maxLength: 50,
       },
     },
 
@@ -109,7 +109,7 @@ export const USER_SCHEMA = {
       'x-component-props': {
         placeholder: '请输入邮箱',
         allowClear: true,
-        maxlength: 30,
+        maxLength: 30,
       },
     },
     roleIds: {
