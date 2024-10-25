@@ -81,7 +81,7 @@ export async function GET(request: Request) {
   })
 
   return ResponseSuccess({
-    records:records.map((item)=>({...item})),
+    records:records.map((item)=>({...item,roleNames:item.user_role.map(v=>v.roles.name).join(',')})),
     totalRow
   })
 }

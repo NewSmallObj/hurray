@@ -1,11 +1,14 @@
 'use client'
 import SchemaForm from '@/app/components/SchemaForm/index'
 import { USER_SCHEMA } from '@/app/schema/user'
+import useUser from '@/app/store/useUser'
 import {
 	PAGE_SYS_USER,
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
+import { useOptionsDept, useOptionsRole } from '@/app/_api/common/index'
+import { DeptType } from '@/app/_api/sys/dept'
 import { getUserList, sysUserAdd, sysUserFind, UserType } from '@/app/_api/sys/user'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
@@ -26,6 +29,9 @@ import {
 
 export default function UserPage() {
 	const [form] = Form.useForm()
+  const { dic} = useUser()
+  const depts = useOptionsDept()
+  const roles = useOptionsRole()
 
 	const { tableProps, search, params } = useAntdTable(getUserList, {
 		manual: false,
@@ -91,23 +97,23 @@ export default function UserPage() {
 		},
 	]
 
-  const  handlerDelete = (row:UserType)=>{
+  const handlerDelete = (row:UserType)=>{
     
   }
 
-	const fetchRoles = (field: Field) => {
+	const fetchRoles = async (field: Field) => {
 		field.loading = true
-		field.dataSource = []
+		field.dataSource = (await roles.runAsync())?.data?.map((v:UserType)=>({...v,label:v.name,value:v.id})) || []
 		field.loading = false
 	}
-	const fetchDepts = (field: Field) => {
+	const fetchDepts = async (field: Field) => {
 		field.loading = true
-		field.dataSource = []
+		field.dataSource  = (await depts.runAsync())?.data?.map((v:DeptType)=>({...v,label:v.name,value:v.id})) || []
 		field.loading = false
 	}
 	const fetchType = (field: Field) => {
 		field.loading = true
-		field.dataSource = []
+		field.dataSource = dic?.USER_TYPE || []
 		field.loading = false
 	}
   

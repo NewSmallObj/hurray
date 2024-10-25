@@ -41,6 +41,7 @@ export const USER_SCHEMA = {
       type: 'string',
       title: '部门',
       required: false,
+      enum: [],
       'x-decorator': 'FormItem',
       'x-read-pretty': '{{readOnly}}',
       'x-component': 'Select',
@@ -115,6 +116,7 @@ export const USER_SCHEMA = {
     roleIds: {
       type: 'string',
       title: '角色',
+      enum: [],
       required: false,
       'x-decorator': 'FormItem',
       'x-read-pretty': '{{readOnly}}',

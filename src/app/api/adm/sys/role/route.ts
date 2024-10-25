@@ -48,17 +48,13 @@ export const PUT = async (request: Request) => {
       ...values,
       menu_role:{
         create: newMenuIds.map((menu_id:string) => ({ menu_id })),
+        deleteMany: {
+          menu_id: {
+            in:removedMenuIds
+          }
+        }
       }
     },
-  })
-  
-  await prisma.menuRole.deleteMany({
-    where: {
-      role_id: id,
-      menu_id: {
-        in: removedMenuIds
-      }
-    }
   })
   
   return ResponseSuccess(null)

@@ -10,6 +10,11 @@ export const PAGE_SYS_ROLE = "PAGE_SYS_ROLE"
 
 export const LOCALSTORAGE = "HURRAY_LOCALSTORAGE"
 
+
+export const OPTIONS_ROLES = "OPTIONS_ROLES"
+export const OPTIONS_DEPTS = "OPTIONS_DEPTS"
+export const OPTIONS_USERS = "OPTIONS_USERS"
+
 export const BASE_STATICPREFIX = ""
 
 
