@@ -61,3 +61,11 @@ export const sysRoleAdd = async (params: any)=>{
     data: params
   })
 }
+
+export const sysRoleDelete = async (params: any)=>{
+  return await requset({
+    url: URL.SystemRoleFind,
+    method: 'delete',
+    data: params
+  })
+}

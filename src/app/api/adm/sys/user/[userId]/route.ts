@@ -36,3 +36,4 @@ export const GET = async (request: NextRequest,
     deptId: get(user, 'user_dept[0].dept_id', null)
   })
 }
+

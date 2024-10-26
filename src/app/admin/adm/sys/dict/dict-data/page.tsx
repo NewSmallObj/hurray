@@ -95,6 +95,7 @@ export default function DictDataPage() {
 				<Space>
 					<Button
 						type="link"
+            disabled={record.readonly}
 						onClick={() => hanlder(record.id, 'edit', record)}
 					>
 						编辑
@@ -105,7 +106,7 @@ export default function DictDataPage() {
 						okText="是"
 						cancelText="否"
 					>
-						<Button type="link" danger>
+						<Button disabled={record.readonly} type="link" danger>
 							删除
 						</Button>
 					</Popconfirm>
@@ -235,7 +236,7 @@ export default function DictDataPage() {
 
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
 					{...tableProps}
 				/>

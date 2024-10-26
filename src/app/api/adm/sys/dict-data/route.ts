@@ -29,11 +29,11 @@ export const POST = async (request: Request) => {
 
 export const PUT = async (request: Request) => {
   const body = await request.json();
-  const {dictId,code,id,...dict_datas} = body
+  const {dictId,dictCode,id,...dict_datas} = body
 
   await prisma.dictData.update({
     where: {
-      dict_code:code,
+      dict_code:dictCode,
       id: id
     },
     data: {

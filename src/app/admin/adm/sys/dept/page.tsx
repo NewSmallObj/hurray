@@ -261,7 +261,7 @@ export default function DeptPage() {
 
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
 					{...tableProps}
 				/>

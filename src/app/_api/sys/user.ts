@@ -69,3 +69,19 @@ export const sysUserAdd = async (params: any)=>{
     data: params
   })
 }
+
+export const SystemUserDisabled = async (params: {id:string,disabled:boolean,isLogout:boolean})=>{
+  return await requset({
+    url: URL.SystemUserDisabled,
+    method: 'put',
+    data: params
+  })
+}
+
+export const SystemUserRemove = async (params: {id:string})=>{
+  return await requset({
+    url: URL.SystemUserRemove,
+    method: 'delete',
+    data: params
+  })
+}

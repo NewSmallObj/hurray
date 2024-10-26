@@ -9,7 +9,7 @@ import {
 } from '@/app/utils/stants'
 import { useOptionsDept, useOptionsRole } from '@/app/_api/common/index'
 import { DeptType } from '@/app/_api/sys/dept'
-import { getUserList, sysUserAdd, sysUserFind, UserType } from '@/app/_api/sys/user'
+import { getUserList, SystemUserDisabled, SystemUserRemove, sysUserAdd, sysUserFind, UserType } from '@/app/_api/sys/user'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
 import { useAntdTable } from 'ahooks'
@@ -25,6 +25,7 @@ import {
 	Space,
 	Table,
 	TableColumnType,
+  Tag,
 } from 'antd'
 
 export default function UserPage() {
@@ -65,6 +66,11 @@ export default function UserPage() {
 		{
 			title: '状态',
 			dataIndex: 'disabled',
+      render: (_, record) => (
+				<Tag color={record.disabled ? 'error' : 'success'}>
+					{record.disabled ? '禁用' : '启用'}
+				</Tag>
+			),
 		},
 		{
 			title: '操作',
@@ -83,6 +89,17 @@ export default function UserPage() {
 						编辑
 					</Button>
           <Popconfirm
+						title={ record.disabled ? "确认启用":"确认禁用?"}
+						onConfirm={() => handlerEnable(record)}
+						okText="是"
+						cancelText="否"
+					>
+            <Button type="link" 
+              danger={!record.disabled}>
+              { record.disabled ? "启用":"禁用" }
+            </Button>
+          </Popconfirm>
+          <Popconfirm
 						title="确认删除?"
 						onConfirm={() => {}}
 						okText="是"
@@ -97,8 +114,24 @@ export default function UserPage() {
 		},
 	]
 
-  const handlerDelete = (row:UserType)=>{
-    
+  const handlerDelete = async (row:UserType)=>{
+    const res = await SystemUserRemove({id:row.id})
+    if(res.code === 200){
+      message.success('删除成功')
+      await reset()
+    }
+  }
+
+  const handlerEnable = async (row:UserType)=>{
+    const res = await SystemUserDisabled({
+      id:row.id!,
+      disabled: !row.disabled,
+      isLogout: false
+    })
+    if(res.code === 200){
+      message.success("操作成功")
+      reset()
+    }
   }
 
 	const fetchRoles = async (field: Field) => {
@@ -275,7 +308,7 @@ const beforeOpen = (
 
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
 					{...tableProps}
 				/>

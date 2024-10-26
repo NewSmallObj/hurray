@@ -95,17 +95,20 @@ export default function DictPage() {
 				<Space>
 					<Button
 						type="link"
+            disabled={record.readonly}
 						onClick={() => hanlder(record.id, 'edit', record)}
 					>
 						编辑
 					</Button>
           <Popconfirm
 						title="确认删除?"
-						onConfirm={() => {}}
+						onConfirm={() => handlerDelete(record)}
 						okText="是"
 						cancelText="否"
 					>
-            <Button type="link" danger onClick={() => handlerDelete(record)}>
+            <Button type="link" 
+              disabled={record.readonly}
+              danger>
               删除
             </Button>
           </Popconfirm>
@@ -247,7 +250,7 @@ export default function DictPage() {
 
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
 					{...tableProps}
 				/>

@@ -26,6 +26,7 @@ model User {
   disabled      Boolean?     @default(false)
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  deleted       Boolean?     @default(false)
   user_role     UserRole[]      
   user_dept     UserDept[] 
   dept          Dept[]

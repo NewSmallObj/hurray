@@ -16,7 +16,8 @@ export const POST = async (request: Request) => {
   const user = await prisma.user.findFirst({
     where:{
       id:session?.user.userId as string,
-      disabled:false
+      disabled:false,
+      deleted:false
     },
     include:{
       user_role:{
@@ -58,16 +59,16 @@ export const POST = async (request: Request) => {
   const dict = await prisma.dict.findMany({
     where:{
       login_return:true,
-      disabled:false
+      // disabled:false
     },
     orderBy:{
       sort:'asc'
     },
     include:{
       dict_datas:{
-        where:{
-          disabled:false
-        },
+        // where:{
+        //   disabled:false,
+        // },
         orderBy:{
           sort:'asc'
         }

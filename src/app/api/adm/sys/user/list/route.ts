@@ -47,7 +47,8 @@ export async function GET(request: Request) {
       user_role: {
         ...user_role
       },
-      disabled: params.disabled || undefined
+      disabled: params.disabled || undefined,
+      deleted: false
     },
     skip: (params.page - 1) * params.limit,
     take: params.limit,
@@ -76,7 +77,8 @@ export async function GET(request: Request) {
       user_role: {
         ...user_role
       },
-      disabled: params.disabled || undefined
+      disabled: params.disabled || undefined,
+      deleted: false
     }
   })
 

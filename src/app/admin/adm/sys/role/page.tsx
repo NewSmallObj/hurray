@@ -12,6 +12,7 @@ import {
 	sysRoleAdd,
 	sysRoleFind,
 	RoleType,
+  sysRoleDelete,
 } from '@/app/_api/sys/role'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
@@ -92,7 +93,13 @@ export default function RolePage() {
 		},
 	]
 
-	const handlerDelete = (row: RoleType) => {}
+	const handlerDelete = async (row: RoleType) => {
+    const res = await sysRoleDelete(row.id!)
+    if(res.code === 200){
+      message.success('删除成功')
+      await reset()
+    }
+  }
 
 	const fetchMenuTree = async (field: Field) => {
 		field.loading = true
@@ -250,7 +257,7 @@ export default function RolePage() {
 
 				<Table
 					columns={columns}
-					rowKey="email"
+					rowKey="id"
 					style={{ overflow: 'auto' }}
 					{...tableProps}
 				/>
