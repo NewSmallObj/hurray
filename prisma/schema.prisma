@@ -43,6 +43,7 @@ model Role {
   created_Id   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  deleted       Boolean?     @default(false)
   user_role     UserRole[]   
   menu_role     MenuRole[]
   @@map(name: "roles")
@@ -73,6 +74,7 @@ model Menu {
   created_Id   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  deleted       Boolean?     @default(false)
   menu_role     MenuRole[]   
   
   @@map(name: "menus")
@@ -104,6 +106,7 @@ model Dept {
   created_Id   String?        
   createdTime   DateTime     @default(now()) @map(name: "create_time")
   updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  deleted       Boolean?     @default(false)
   dept_user     UserDept[]   
   
   @@map(name: "depts")

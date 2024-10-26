@@ -6,7 +6,11 @@ import { ResponseSuccess } from "@/app/api/response/success";
 
 export const GET = async (request: NextRequest) => {
 
-  const records = await prisma.user.findMany()
+  const records = await prisma.user.findMany({
+    where:{
+      deleted: false
+    }
+  })
   
   return ResponseSuccess(records)
   

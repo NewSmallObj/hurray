@@ -115,7 +115,7 @@ export default function MenuPage() {
 		{
 			dataIndex: 'icon',
 			title: '图标',
-			render: (_, record) => <AntdIcon name={record.icon} />,
+			render: (_, record) =>  record.icon ? <AntdIcon name={record?.icon} /> : <></>,
 		},
 		{
 			dataIndex: 'type',

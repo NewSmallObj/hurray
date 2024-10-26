@@ -72,3 +72,11 @@ export function arrayToTree(items: any[]) {
   }
   return result;
 }
+
+
+export const getTreeAllIds = (data: any):string[] => {
+  return data.reduce((acc: any, cur: any) => {
+    if(!acc.includes(cur.id)) acc.push(cur.id)
+    return acc.concat(getTreeAllIds(cur.children || []))
+  }, [])
+}
