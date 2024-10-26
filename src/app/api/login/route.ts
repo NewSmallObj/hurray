@@ -1,6 +1,7 @@
 import getSession from '@/app/actions/getSession';
 import { ResponseError, ResponseSuccess } from '@/app/api/response/success';
 import prisma from '@/app/libs/prisma';
+import { arrayToTree2 } from '@/app/utils/utils';
 import { User } from '@prisma/client';
 import { flatten } from 'lodash';
 import { NextResponse } from 'next/server';
@@ -20,7 +21,15 @@ export const POST = async (request: Request) => {
     include:{
       user_role:{
         include:{
-          roles:true
+          roles:{
+            include:{
+              menu_role:{
+                select:{
+                  menus:true
+                }
+              }
+            }
+          }
         }
       },
       user_dept:{
@@ -31,11 +40,20 @@ export const POST = async (request: Request) => {
     }
   })
   if(!user) return ResponseError("该用户不存在或已被禁用")
+
+
+  const menus = user?.user_role.map((userRole)=>userRole.roles.menu_role.map((menuRole)=>menuRole.menus))
+ 
+  const menu = menus.reduce((acc,cur)=>acc.concat(cur)).reduce((prev,cur)=>{
+    if(!prev.some((v)=>v.id === cur.id)) prev.push(cur)
+    return prev
+  },([] as typeof menus[0]))
+
   
- 
- const menuIds = await getMenuIds(user,user?.user_role.map(item=>item.role_id));
- 
-  const {permissionCodes,menu} = await getMenu(flatten(menuIds))
+  const permissionCodes = menu.map((v)=>`${v.perms},${v.addit_perms}`.split(',')).reduce((acc,cur)=>{
+    return acc.concat(cur)
+  },([] as string[])).filter((s)=>s !== 'null');
+  
   
   const dict = await prisma.dict.findMany({
     where:{
@@ -65,42 +83,9 @@ export const POST = async (request: Request) => {
   return ResponseSuccess({
     infra:{
       dict:dic,
-      menu,
+      menu:arrayToTree2(menu,"0"),
       route:null,
     },
     user:{...user,password:null,permissionCodes}}
   )
-}
-
- // 查询角色下对应的所有菜单ids
-const getMenuIds = async (user:User,role_ids:string[])=>{
-  // if(!user.type){
-  //   return await prisma.menu.findMany()
-  // }
-  const role = await prisma.role.findMany({
-    where:{
-      menu_role:{
-        some:{
-          role_id:{ in: role_ids}
-        }
-      }
-    },
-    include:{
-      menu_role:true
-    }
-  })
-  return role.map((v)=>v.menu_role.map((v)=>v.menu_id))
-}
-
-// 根据菜单ids查询所有菜单树
-const getMenu = async (menu_ids:string[])=>{
-  const menu = await prisma.menu.findMany({
-    where:{
-      id:{in:menu_ids}
-    }
-  })
-  return {
-    permissionCodes :menu.map((v)=>`${v.perms},${v.addit_perms}`.split(',')),
-    menu
-  }
 }

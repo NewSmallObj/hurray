@@ -103,7 +103,7 @@ export const ROLE_SCHEMA = {
             .localeCompare(optionB.name.toLowerCase()),
         optionAsValue: false, // 返回整行数据
         rowSelection: {
-          checkStrictly: false,
+          checkStrictly: true,
         },
         pagination:false
       },

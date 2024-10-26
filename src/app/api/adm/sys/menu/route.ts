@@ -22,14 +22,30 @@ export const POST = async (request: Request) => {
 export const PUT = async (request: Request) => {
   const body = await request.json();
 
-  const { id,routePath,permissionCode,includePermissionCode,...values } = body
+  const { 
+    id,
+    icon,
+    permissionCode,
+    includePermissionCode,
+    name,
+    pid,
+    remark,
+    routePath,
+    sort,
+    type
+  } = body
 
-  await prisma.dict.update({
+  await prisma.menu.update({
     where: {
       id: id
     },
     data: {
-      ...values,
+      pid,
+      icon,
+      name,
+      sort,
+      remark,
+      type,
       route_path:routePath,
       perms: permissionCode,
       addit_perms: includePermissionCode

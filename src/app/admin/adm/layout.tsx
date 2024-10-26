@@ -69,7 +69,7 @@ export default function RootLayout({
 	})
 
 	const tags = useMemo(() => {
-		if (!layoutTags) []
+		if (!layoutTags) return []
 		return Object.entries(layoutTags!).map(([key, value]) => {
 			return {
 				label: key,

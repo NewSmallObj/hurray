@@ -17,12 +17,15 @@ export const GET = async (request: NextRequest) => {
   })
 
   const tree = arrayToTree2(records
-    .map((v)=>({
-      ...v,
-      routePath:v.route_path,
-      permissionCode:v.perms,
-      includePermissionCode:v.addit_perms
-    })),'0')
+    .map((v)=>{
+      const { route_path,perms,addit_perms,...values } = v
+      return {
+        ...values,
+        routePath:v.route_path,
+        permissionCode:v.perms,
+        includePermissionCode:v.addit_perms
+      }
+    }),'0')
   
   return ResponseSuccess(tree)
   
