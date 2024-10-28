@@ -6,18 +6,22 @@ export const themeValues = {
   light: {
     '--background': '#ffffff',
     '--foreground': '#171717',
-    'token': {}
+    'token': {
+      colorPrimary: '#1677ff',
+    }
   },
   dark: {
     '--background': '#0a0a0a',
     '--foreground': '#ededed',
-    'token': {}
+    'token': {
+      colorPrimary: '#1677ff',
+    }
   },
   cupcake: {
     '--background': '#ffffff',
     '--foreground': '#171717',
     'token': {
-      colorPrimary: '#291334',
+      colorPrimary: '#1677ff',
       // borderRadiusOuter: 99
     }
   },

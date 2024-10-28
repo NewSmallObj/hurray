@@ -1,8 +1,12 @@
 "use client";
+import useUser from "@/app/store/useUser";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation"
 
 export default function LayoutSider(){
+  
+  const {menuTree}= useUser()
+  
   const menu = [
     {
       path: '/admin/adm/sys',
@@ -53,7 +57,7 @@ export default function LayoutSider(){
   return (
     <div className="h-full shadow-md relative">
       <ul className="menu bg-base h-full w-full">
-        <MenuItem menu={menu} />
+        <MenuItem menu={menuTree} />
       </ul>
     </div>
   )
@@ -64,7 +68,7 @@ const MenuItem = ({menu}: {menu:any[]}) => {
   const router = useRouter()
 
   const handler = (item:any)=>{
-    router.push(item.path)
+    router.push(item.route_path)
   }
 
   return (
@@ -74,7 +78,7 @@ const MenuItem = ({menu}: {menu:any[]}) => {
           if(item.children){
             return (
               <li key={item.id}>
-                <details open={pathname.includes(item.path) && pathname != '/admin/adm'}>
+                <details open={pathname.includes(item.route_path) && pathname != '/admin/adm'}>
                   <summary>{item.name}</summary>
                   <ul>
                     <MenuItem menu={item.children} />
@@ -87,7 +91,7 @@ const MenuItem = ({menu}: {menu:any[]}) => {
             <li key={item.id}>
               <a className={
                 clsx(`text-[inherit] hover:text-[inherit]`,{
-                    'active': pathname.includes(item.path) && pathname != '/admin/adm' // item.path === pathname
+                    'active': pathname.includes(item.route_path) && pathname != '/admin/adm' // item.path === pathname
                   })
                 }
                 onClick={()=> handler(item)}

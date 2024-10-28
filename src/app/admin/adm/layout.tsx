@@ -4,12 +4,16 @@ import useTheme from '@/app/store/useTheme'
 import { themeValues } from '@/app/utils/themeStants'
 import {
 	Breadcrumb,
+	Button,
 	ConfigProvider,
+	Dropdown,
 	Layout,
 	message,
+	Space,
 	Spin,
 	Splitter,
 	Tabs,
+	Tag,
 	theme,
 	ThemeConfig,
 } from 'antd'
@@ -29,7 +33,34 @@ import { LAYOUTTAGS, LOCALSTORAGE } from '@/app/utils/stants'
 import { findIndex, get, last, omit } from 'lodash'
 import useUser from '@/app/store/useUser'
 import { signOut } from 'next-auth/react'
+import type { MenuProps } from 'antd';
+import { treeToArray } from '@/app/utils/utils'
+import { DownOutlined } from '@ant-design/icons';
 const Panel = Splitter.Panel
+
+
+
+const items: MenuProps['items'] = [
+  {
+    label: "关闭当前",
+    key: '0',
+  },
+  {
+    type: 'divider',
+  },
+  {
+    label: "关闭左侧",
+    key: '1',
+  },
+  {
+    label: '关闭右侧',
+    key: '2',
+  },
+  {
+    label: '全部关闭',
+    key: '3',
+  },
+];
 
 export default function RootLayout({
 	children,
@@ -42,7 +73,8 @@ export default function RootLayout({
 	const params = useParams()
 	const router = useRouter()
 	const [activeKey, setActiveKey] = useState('')
-	const { setCurrentUser, setDic, setMenuTree, setPermsList } = useUser()
+	const { menuTree, setCurrentUser, setDic, setMenuTree, setPermsList } =
+		useUser()
 	const [userData, setUserData] = useLocalStorageState<any>(LOCALSTORAGE)
 	const [spinning, setSpinning] = useState(true)
 
@@ -57,11 +89,19 @@ export default function RootLayout({
 			setDic(userData.infra.dict)
 			setMenuTree(userData.infra.menu)
 			setPermsList(userData.infra.user?.permissionCodes || [])
-      setSpinning(false)
+			setSpinning(false)
 		},
 		[userData],
 		{ wait: 100 }
 	)
+
+	const menu = useMemo(() => {
+		return treeToArray(menuTree, '0')
+	}, [menuTree])
+
+	const getLable = (key: string) => {
+		return menu.find((item) => item.route_path === key)?.name || ''
+	}
 
 	const [layoutTags, setLayoutTags] = useSessionStorageState(LAYOUTTAGS, {
 		defaultValue: {},
@@ -72,7 +112,8 @@ export default function RootLayout({
 		if (!layoutTags) return []
 		return Object.entries(layoutTags!).map(([key, value]) => {
 			return {
-				label: key,
+				id: key,
+				label: getLable(key),
 				key: key,
 				children: <></>,
 			}
@@ -103,11 +144,15 @@ export default function RootLayout({
 		router.push(newActiveKey)
 	}
 
-	const onEdit = (targetKey: any, action: 'add' | 'remove') => {
-		if (action === 'remove') {
-			remove(targetKey)
-		}
-	}
+	// const onEdit = (targetKey: any, action: 'add' | 'remove') => {
+	// 	if (action === 'remove') {
+	// 		remove(targetKey)
+	// 	}
+	// }
+
+	const colorPrimary = useMemo(() => {
+		return themeValues[currentTheme]['token']['colorPrimary']
+	}, [currentTheme, themeValues])
 
 	const remove = (targetKey: string) => {
 		if (pathname === targetKey) {
@@ -117,9 +162,41 @@ export default function RootLayout({
 				onChange(item.key)
 			}
 		}
-
 		setLayoutTags({ ...omit(layoutTags!, [targetKey]) })
 	}
+
+
+  const handleMenuClick:MenuProps['onClick'] = (e) => {
+    if(e.key === "0"){
+      remove(activeKey)
+    }
+    const currentIndex = tags.findIndex((v)=>v.key === activeKey)
+    if(e.key === '1'){
+      const keys = tags.filter((_,i)=> i < currentIndex).map((v)=>v.key)
+      setLayoutTags({ ...omit(layoutTags!, [...keys]) })
+    }
+    if(e.key === '2'){
+      const keys = tags.filter((_,i)=> i > currentIndex).map((v)=>v.key)
+      setLayoutTags({ ...omit(layoutTags!, [...keys]) })
+    }
+    if(e.key === '3'){
+      tags.forEach((v)=>{
+        remove(v.key)
+      })
+    }
+  }
+
+
+  const DropDownRight = ()=>(
+    <Dropdown menu={{ 
+      items,
+      onClick: handleMenuClick,
+       }} trigger={['hover']}>
+      <a className='p-[20px]' onClick={(e) => e.preventDefault()}>
+        <DownOutlined />
+      </a>
+    </Dropdown>
+  )
 
 	return (
 		<ConfigProvider
@@ -133,10 +210,12 @@ export default function RootLayout({
 			// button={{ style: { borderRadius: 99 } }}
 			locale={zhCN}
 		>
-			<Spin spinning={spinning} percent={"auto"} fullscreen />
-			<div className={clsx(`w-full h-full box-border`,{
-        hidden: spinning
-      })}>
+			<Spin spinning={spinning} percent={'auto'} fullscreen />
+			<div
+				className={clsx(`w-full h-full box-border`, {
+					hidden: spinning,
+				})}
+			>
 				<Splitter
 					layout="vertical"
 					className={clsx(`w-screen h-screen box-border`)}
@@ -154,27 +233,45 @@ export default function RootLayout({
 								<LayoutSider />
 							</Panel>
 							<Panel>
-								{/* <div className={
-                clsx(`w-full h-full flex flex-col items-start justify-start box-border p-2`,{
-                  "bg-gray-100": currentTheme !== 'dark'
-                })
-              }>
-								<Tabs
-									hideAdd
-                  className='w-full rounded-md'
-                  size="small"
-									onChange={onChange}
-									activeKey={activeKey}
-									type="editable-card"
-									onEdit={onEdit}
-									items={tags}
-								/>
-								<div className='flex-1 w-full box-border border-l border-r border-solid border-base-200'>
-                  {children}
-                </div>
-							</div> */}
-								<div className="w-full h-full bg-base-200 box-border">
-									{children}
+								<div className="w-full h-full box-border flex justify-start items-start flex-col">
+									<div className="w-full box-border px-[20px]">
+										<Tabs
+											className="w-full box-border"
+											defaultActiveKey={activeKey}
+											tabBarExtraContent={<DropDownRight />}
+											tabPosition={'top'}
+											items={tags}
+                      style={{height:'46px'}}
+                      size={'small'}
+											renderTabBar={(
+												props,
+												DefaultTabBar
+											) => (
+												<DefaultTabBar {...props}>
+													{(node) => (
+														<div key={node.key} className="h-[46px] flex justify-center items-center flex-col">
+                              <Tag
+                                key={node.key}
+                                closable
+                                color={ node.key === activeKey ? colorPrimary : ''}
+                                className={clsx(
+                                  `cursor-pointer`
+                                )}
+                                onClick={() =>onChange(node.key!)}
+                                onClose={() =>remove(node.key!)}
+                              >
+                                {getLable( node.key!)}
+                              </Tag>
+                            </div>
+													)}
+												</DefaultTabBar>
+											)}
+										/>
+									</div>
+
+									<div className="flex-1 w-full bg-base-200 box-border">
+										{children}
+									</div>
 								</div>
 							</Panel>
 						</Splitter>
