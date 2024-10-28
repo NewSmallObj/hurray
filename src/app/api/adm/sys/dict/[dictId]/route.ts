@@ -35,5 +35,11 @@ export const DELETE = async (request: NextRequest,
       }
     })
     
+    await prisma.dictData.deleteMany({
+      where:{
+        dict_id: params.dictId
+      }
+    })
+    
     return ResponseSuccess(null)
   }

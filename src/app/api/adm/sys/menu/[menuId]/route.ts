@@ -1,6 +1,6 @@
 import { ResponseSuccess } from '@/app/api/response/success';
 import prisma from '@/app/libs/prisma';
-import { getTreeAllIds } from '@/app/utils/utils';
+import { arrayToTree, arrayToTree2, getTreeAllIds } from '@/app/utils/utils';
 import { NextResponse } from 'next/server';
 
 type Params = {
@@ -10,18 +10,16 @@ type Params = {
 export const DELETE = async (request: Request,
   { params }: { params: Params }) => {
     
-  const menu = await prisma.menu.findFirst({
-    where: {
-      id: params.menuId
-    }
-  })
+  const menus = await prisma.menu.findMany()
+
+  const menu = arrayToTree2(menus,params.menuId)
     
   const ids = getTreeAllIds(menu);
   
   await prisma.menu.updateMany({
     where: {
       id: {
-        in: ids
+        in: [...ids,params.menuId]
       }
     },
     data:{
