@@ -64,8 +64,8 @@ export const sysMenuTree = async () => {
   return menu
 }
 
-export const getMenuList = async (params: any) => {
-  const {pageSize,current,values} = params
+export const getMenuList = async (params: any,values:any) => {
+  const {pageSize,current} = params
   const res = await requset<PageData<MenuType>>({
     url:URL.SystemMenuList,
     method: 'get',

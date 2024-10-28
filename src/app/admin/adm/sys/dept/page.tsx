@@ -235,7 +235,7 @@ export default function DeptPage() {
 					<Row gutter={24}>
 						<Col span={6}>
 							<Form.Item label="关键字" name="name">
-								<Input placeholder="请输入关键字" />
+								<Input placeholder="请输入关键字" allowClear />
 							</Form.Item>
 						</Col>
 						<Col span={6}>

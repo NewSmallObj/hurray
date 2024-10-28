@@ -51,8 +51,8 @@ export const sysDictSave = async (params: DictSaveParams) => {
   })
 }
 
-export const getDictList = async (params: any) => {
-  const {pageSize,current,values} = params
+export const getDictList = async (params: any,values:any) => {
+  const {pageSize,current} = params
   const res = await requset<PageData<DictType>>({
     url:URL.SystemDictList,
     method: 'get',

@@ -28,8 +28,8 @@ export interface DeptType {
   leaderName: string;
 }
 
-export const getDeptList = async (params: any) => {
-  const {pageSize,current,...values} = params
+export const getDeptList = async (params: any,values: any) => {
+  const {pageSize,current} = params
   const res = await requset<PageData<DeptType>>({
     url:URL.SystemDeptList,
     params:{

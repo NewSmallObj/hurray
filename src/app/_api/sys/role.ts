@@ -30,8 +30,8 @@ export interface RoleType {
   sort: number;
 }
 
-export const getRoleList = async (params: any) => {
-  const {pageSize,current,...values} = params
+export const getRoleList = async (params: any,values:any) => {
+  const {pageSize,current} = params
   const res = await requset<PageData<RoleType>>({
     url:URL.SystemRole,
     params:{

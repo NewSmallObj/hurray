@@ -38,8 +38,8 @@ export interface UserType {
   roleIds: any[];
 }
 
-export const getUserList = async (params: any) => {
-  const {pageSize,current,...values} = params
+export const getUserList = async (params: any,values:any) => {
+  const {pageSize,current} = params
   const res = await requset<PageData<UserType>>({
     url:URL.SystemUser,
     params:{
