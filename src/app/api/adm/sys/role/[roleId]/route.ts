@@ -36,9 +36,12 @@ export const GET = async (request: NextRequest,
 export const DELETE = async (request: NextRequest,
   { params }: { params: Params }
   )=> {
-    await prisma.role.delete({
+    await prisma.role.update({
       where: {
         id: params.roleId
+      },
+      data:{
+        deleted:true
       }
     })
     

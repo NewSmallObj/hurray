@@ -11,6 +11,9 @@ interface Params {
 export const GET = async (request: NextRequest) => {
 
   const records = await prisma.menu.findMany({
+    where:{
+      deleted:false
+    },
     orderBy:{
       sort: 'asc'
     }

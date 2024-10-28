@@ -17,16 +17,48 @@ export const POST = async (request: Request) => {
     where:{
       id:session?.user.userId as string,
       disabled:false,
-      deleted:false
+      deleted:false,
+      // user_role:{
+      //   some:{
+      //     roles:{
+      //       deleted:false,
+      //       menu_role:{
+      //         some:{
+      //           menus:{
+      //             deleted:false
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
+      // user_dept:{
+      //   some:{
+      //     depts:{
+      //       deleted:false
+      //     }
+      //   }
+      // }
     },
+ 
     include:{
       user_role:{
+        where:{
+          roles:{
+            deleted:false
+          }
+        },
         include:{
           roles:{
             include:{
               menu_role:{
+                where:{
+                  menus:{
+                    deleted:false
+                  }
+                },
                 select:{
-                  menus:true
+                  menus:true,
                 }
               }
             }
@@ -34,6 +66,9 @@ export const POST = async (request: Request) => {
         }
       },
       user_dept:{
+        where:{
+          depts:{deleted:false}
+        },
         include:{
           depts:true
         }
@@ -41,11 +76,12 @@ export const POST = async (request: Request) => {
     }
   })
   if(!user) return ResponseError("该用户不存在或已被禁用")
-
-
-  const menus = user?.user_role.map((userRole)=>userRole.roles.menu_role.map((menuRole)=>menuRole.menus))
  
-  const menu = menus.reduce((acc,cur)=>acc.concat(cur)).reduce((prev,cur)=>{
+
+  const menus = user?.user_role.map((userRole)=>userRole.roles
+    .menu_role.map((menuRole)=>menuRole.menus))
+ 
+  const menu = menus.length < 1 ? [] : menus.reduce((acc,cur)=>acc.concat(cur)).reduce((prev,cur)=>{
     if(!prev.some((v)=>v.id === cur.id)) prev.push(cur)
     return prev
   },([] as typeof menus[0]))

@@ -30,10 +30,13 @@ export const GET = async (request: NextRequest,
 export const DELETE = async (request: Request,
   { params }: { params: Params }
   ) => {
-  await prisma.dept.delete({
+  await prisma.dept.update({
     where: {
       id: params.deptId
     },
+    data:{
+      deleted:true
+    }
   })
 
   return ResponseSuccess(null)

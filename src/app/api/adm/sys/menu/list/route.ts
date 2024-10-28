@@ -16,6 +16,9 @@ export const GET = async (request: NextRequest) => {
   }
 
   const records = await prisma.menu.findMany({
+    where: {
+      deleted: false
+    },
     skip: (params.page - 1) * params.limit,
     take: params.limit,
     orderBy:{

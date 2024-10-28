@@ -22,6 +22,7 @@ export const GET = async (request: NextRequest) => {
       name: {
         contains: params.name || undefined
       },
+      deleted:false
     },
     orderBy:{
       sort: 'asc'
@@ -42,6 +43,7 @@ export const GET = async (request: NextRequest) => {
       name: {
         contains: params.name || undefined
       },
+      deleted:false
     }
   })
 

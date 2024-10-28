@@ -18,11 +18,14 @@ export const DELETE = async (request: Request,
     
   const ids = getTreeAllIds(menu);
   
-  await prisma.menu.deleteMany({
+  await prisma.menu.updateMany({
     where: {
       id: {
         in: ids
       }
+    },
+    data:{
+      deleted:true
     }
   })
 
