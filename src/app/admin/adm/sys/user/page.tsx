@@ -7,12 +7,13 @@ import {
 	StatusOperation,
 	statusOperation,
 } from '@/app/utils/stants'
+import { filterSort } from '@/app/utils/utils'
 import { useOptionsDept, useOptionsRole } from '@/app/_api/common/index'
 import { DeptType } from '@/app/_api/sys/dept'
 import { getUserList, SystemUserDisabled, SystemUserRemove, sysUserAdd, sysUserFind, UserType } from '@/app/_api/sys/user'
 import { FormDialog } from '@formily/antd-v5'
 import { Field, IFormProps } from '@formily/core'
-import { useAntdTable } from 'ahooks'
+import { useAntdTable, useThrottleEffect } from 'ahooks'
 import {
 	Button,
 	Col,
@@ -27,12 +28,18 @@ import {
 	TableColumnType,
   Tag,
 } from 'antd'
+import { useMemo } from 'react'
 
 export default function UserPage() {
 	const [form] = Form.useForm()
-  const { dic} = useUser()
+  const {dic} = useUser()
   const depts = useOptionsDept()
   const roles = useOptionsRole()
+
+  useThrottleEffect(()=>{
+    depts.run()
+    roles.run()
+  },[],{wait:300})
 
 	const { tableProps, search, params } = useAntdTable(getUserList, {
 		manual: false,
@@ -134,14 +141,24 @@ export default function UserPage() {
     }
   }
 
+  const rolesDataSource = useMemo(()=>{
+    if(!roles.data?.data) return []
+    return roles.data.data.map((v:UserType)=>({...v,label:v.name,value:v.id}))
+  },[roles.data])
+
+  const deptsDataSource = useMemo(()=>{
+    if(!depts.data?.data) return []
+    return depts.data.data.map((v:UserType)=>({...v,label:v.name,value:v.id}))
+  },[depts.data])
+
 	const fetchRoles = async (field: Field) => {
 		field.loading = true
-		field.dataSource = (await roles.runAsync())?.data?.map((v:UserType)=>({...v,label:v.name,value:v.id})) || []
+		field.dataSource = rolesDataSource || []
 		field.loading = false
 	}
 	const fetchDepts = async (field: Field) => {
 		field.loading = true
-		field.dataSource  = (await depts.runAsync())?.data?.map((v:DeptType)=>({...v,label:v.name,value:v.id})) || []
+		field.dataSource  = deptsDataSource || []
 		field.loading = false
 	}
 	const fetchType = (field: Field) => {
@@ -277,12 +294,12 @@ const beforeOpen = (
 						</Col>
 						<Col span={6}>
 							<Form.Item label="角色" name="roleId">
-								<Select placeholder="请选择角色" />
+								<Select placeholder="请选择角色" options={rolesDataSource} filterSort={filterSort} />
 							</Form.Item>
 						</Col>
 						<Col span={6}>
 							<Form.Item label="部门" name="deptId">
-								<Select placeholder="请选择部门" />
+								<Select placeholder="请选择部门" options={deptsDataSource} filterSort={filterSort} />
 							</Form.Item>
 						</Col>
 						<Col span={6}>

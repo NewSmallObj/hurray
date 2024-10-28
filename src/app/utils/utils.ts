@@ -80,3 +80,6 @@ export const getTreeAllIds = (data: any):string[] => {
     return acc.concat(getTreeAllIds(cur.children || []))
   }, [])
 }
+
+export const filterSort= (optionA:any, optionB:any) =>
+  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
