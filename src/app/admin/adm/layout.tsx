@@ -234,7 +234,11 @@ export default function RootLayout({
 							</Panel>
 							<Panel>
 								<div className="w-full h-full box-border flex justify-start items-start flex-col">
-									<div className="w-full box-border px-[20px]">
+									<div className={
+                    clsx(`w-full box-border px-[20px]`,{
+                      'hidden': !tags.length
+                    })
+                  }>
 										<Tabs
 											className="w-full box-border"
 											defaultActiveKey={activeKey}

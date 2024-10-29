@@ -54,7 +54,15 @@ export const POST = async (request: Request) => {
               menu_role:{
                 where:{
                   menus:{
-                    deleted:false
+                    deleted:false,
+                    type:{
+                      in:[1,2]
+                    }
+                  },
+                },
+                orderBy:{
+                  menus:{
+                    sort:'asc'
                   }
                 },
                 select:{

@@ -159,3 +159,38 @@ model DictData {
   
   @@map(name: "dict_datas")
 }
+
+
+model Columns {
+  id            String       @default(cuid()) @id
+  pid           String
+  title         String       @db.VarChar(50)
+  show_type     String?       @db.VarChar(50)
+  url           String?       @db.VarChar(50)
+  url_open_with Boolean?     @default(false)
+  icon          String?      @db.VarChar(50)
+  sort          Int          @default(0)
+  show_nav      Boolean?     @default(false)
+  disabled      Boolean?     @default(false)
+  remark        String?      @db.VarChar(200)
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+  articles      Article[]
+
+  @@map(name: "columns")
+ }
+
+ model Article {
+  id            String       @default(cuid()) @id
+  column        Columns      @relation(fields: [column_id], references: [id])
+  column_id     String
+  title         String       @db.VarChar(50)
+  outline       String?       @db.VarChar(50)
+  content       String?
+  published     Boolean?     @default(false)
+  publish_time  DateTime     @default(now()) @map(name: "publish_time")
+  createdTime   DateTime     @default(now()) @map(name: "create_time")
+  updatedTime   DateTime     @updatedAt @map(name: "update_time")
+
+  @@map(name:"articles")
+}
