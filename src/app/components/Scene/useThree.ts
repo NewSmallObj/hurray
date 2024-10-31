@@ -11,9 +11,11 @@ export const useThree = () => {
   const renderer = useRef<THREE.WebGLRenderer>()
   const size = useSize(() => document.querySelector('#three'))
   const scene = new THREE.Scene();
+  
   const geometry = new THREE.BoxGeometry(1, 1, 1); // 立方体
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 材质
   const cube = new THREE.Mesh(geometry, material); // 网格模型
+  
   const camera = new THREE.PerspectiveCamera(
     45, // 视角
     size?.width! / size?.height!, // 宽高比

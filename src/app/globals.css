@@ -3,56 +3,98 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	--background: #ffffff;
+	--foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #141414;
-    --foreground: #ededed;
-  }
+	:root {
+		--background: #141414;
+		--foreground: #ededed;
+	}
 }
-
-
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Arial, Helvetica, sans-serif;
 }
 
-html,body{
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+html,
+body {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
 }
-
 
 a {
-  text-decoration: none; 
-  color: inherit; 
-  cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+	.text-balance {
+		text-wrap: balance;
+	}
 }
 
-.ant-tabs-nav{
-  margin-bottom: 0px !important;
+.ant-tabs-nav {
+	margin-bottom: 0px !important;
 }
 
-
-canvas{
-  display: block;
-  /* position: fixed;
+canvas {
+	display: block;
+	/* position: fixed;
   left: 0;
   top: 0; */
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
+}
+
+.three-element {
+	width: 120px;
+	height: 160px;
+	box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+	border: 1px solid rgba(127, 255, 255, 0.25);
+	font-family: Helvetica, sans-serif;
+	text-align: center;
+	line-height: normal;
+	cursor: default;
+  position: relative;
+}
+
+.three-element:hover {
+	box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+	border: 1px solid rgba(127, 255, 255, 0.75);
+}
+
+.three-element .number {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 12px;
+	color: rgba(127, 255, 255, 0.75);
+}
+
+.three-element .symbol {
+	position: absolute;
+	top: 40px;
+	left: 0px;
+	right: 0px;
+	font-size: 60px;
+	font-weight: bold;
+	color: rgba(255, 255, 255, 0.75);
+	text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+}
+
+.three-element .details {
+	position: absolute;
+	bottom: 15px;
+	left: 0px;
+	right: 0px;
+	font-size: 12px;
+	color: rgba(127, 255, 255, 0.75);
 }

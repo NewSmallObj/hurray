@@ -7,6 +7,10 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    boxShadow:{
+      card:'0px 0px 12px rgba(0,255,255,0.5)',
+      cardHigh:'0px 0px 12px rgba(0,255,255,0.75)',
+    },
     extend: {
       colors: {
         // background: "var(--background)",
