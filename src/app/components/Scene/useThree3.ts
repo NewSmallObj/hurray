@@ -1,7 +1,7 @@
 "use client";
 
 import { useSize, useThrottleEffect } from "ahooks";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 // 导入轨道控制器
 
@@ -37,7 +37,8 @@ export const useThree3 = () => {
   const renderer = useRef<THREE.WebGLRenderer>()
   const size = useSize(() => document.querySelector('#three'))
   const scene = new THREE.Scene();
-  const controls = useRef<any>()
+  const controls = useRef<any>();
+  const [percentComplete,setPercentComplete] = useState(0)
 
   scene.background = null; //new THREE.Color( 0xbfe3dd )
 
@@ -46,16 +47,16 @@ export const useThree3 = () => {
   // const cube = new THREE.Mesh(geometry, material); // 网格模型
 
   // 多面体
-  const geometry = new THREE.DodecahedronGeometry( 0.2, 0 ); //BoxGeometry(0.15,0.15,0.15) //
-  const material = new THREE.MeshStandardMaterial( {
-    color: 0x915eff, // new THREE.Color().setHSL( Math.random(), 1, 0.75, THREE.SRGBColorSpace ),
-    roughness: 0.5,
-    metalness: 0,
-    flatShading: true
-  });
-  const cube = new THREE.Mesh( geometry, material ) 
-  cube.position.set(0.41, -0.57, 1.4) // 0.33 0.66 2.62
-  const cubeHelper = new THREE.BoxHelper(cube);
+  // const geometry = new THREE.DodecahedronGeometry( 0.2, 0 ); //BoxGeometry(0.15,0.15,0.15) //
+  // const material = new THREE.MeshStandardMaterial( {
+  //   color: 0x915eff, // new THREE.Color().setHSL( Math.random(), 1, 0.75, THREE.SRGBColorSpace ),
+  //   roughness: 0.5,
+  //   metalness: 0,
+  //   flatShading: true
+  // });
+  // const cube = new THREE.Mesh( geometry, material ) 
+  // cube.position.set(0.41, -0.57, 1.4) // 0.33 0.66 2.62
+  // const cubeHelper = new THREE.BoxHelper(cube);
 
   // 环境光
   const ambientLight = new THREE.AmbientLight( 0xffffff ,0.5);
@@ -81,10 +82,10 @@ export const useThree3 = () => {
   const ghost1 = new THREE.PointLight('#ff00ff', 2, 0)
   const ghost2 = new THREE.PointLight('#00ffff', 2, 0)
   const ghost3 = new THREE.PointLight('#ffff00', 2, 0)
-  ghost1.position.set(0, 1.2, 0)
-  ghost2.position.set(0, 1.2, 0)
-  ghost3.position.set(0, 1.2, 0)
-  const ghost1Helper = new THREE.PointLightHelper(ghost2, 0.2);
+  ghost1.position.set(0, 0.9, 0)
+  ghost2.position.set(0, 0.9, 0)
+  ghost3.position.set(0, 0.9, 0)
+  const ghost1Helper = new THREE.PointLightHelper(ghost1, 0.2);
   
   // 辅助坐标系
   const axesHelper = new THREE.AxesHelper(5); 
@@ -114,6 +115,7 @@ export const useThree3 = () => {
     controls.current = new OrbitControls(camera, renderer.current!.domElement);
     controls.current.enableDamping = true; // 阻尼
     controls.current.dampingFactor = 0.05; // 阻尼惯性
+    controls.current.enableZoom = false; // 禁用滚轮缩放
     // controls.current.autoRotate = true; // 自动旋转
 
     gltfLoader.load('/models/programmer/scene.gltf', (gltf: any) => {
@@ -121,11 +123,36 @@ export const useThree3 = () => {
       const boundingBox = new THREE.Box3().setFromObject(model);
       const size = boundingBox.getSize(new THREE.Vector3());
       // model.rotation.y = Math.PI / 180 * 300;
+      model.position.x = 0.41
+      model.position.y = -0.32
+      model.position.z = 0.41
+      model.rotation.x = -0.12 
+      model.rotation.y = -0.52
+      model.rotation.z = -0.07
       console.log('Model size:', size);
 
       model.scale.set(0.25, 0.25, 0.25);
       scene.add(model);
+      setPercentComplete(100)
 
+      // 模型参数
+      const cubeHelpergroup = gui.addFolder('Cube-Helper');
+      cubeHelpergroup.add(model.position,'x').min(-10).max(10).step(0.01);
+      cubeHelpergroup.add(model.position,'y').min(-10).max(10).step(0.01);
+      cubeHelpergroup.add(model.position,'z').min(-10).max(10).step(0.01);
+      cubeHelpergroup.add(model.rotation,'x').min(-1).max(1).step(0.01);
+      cubeHelpergroup.add(model.rotation,'y').min(-1).max(1).step(0.01);
+      cubeHelpergroup.add(model.rotation,'z').min(-1).max(1).step(0.01);
+
+    },(xhr: ProgressEvent)=>{
+      if (xhr.lengthComputable) {
+        const percentComplete = (xhr.loaded / xhr.total) * 100;
+        console.log(`加载进度: ${percentComplete.toFixed(2)}%`);
+        setPercentComplete(+percentComplete.toFixed(2))
+      }else{
+        setPercentComplete(40)
+        console.log('无法计算加载进度');
+      }
     });
     
 
@@ -138,11 +165,10 @@ export const useThree3 = () => {
     scene.add(ghost2)
     scene.add(ghost3)
     // scene.add(ghost1Helper)
-    scene.add(cube);
+    // scene.add(cube);
+    // scene.add(cubeHelper);
 
-    scene.add(cubeHelper);
-
-    camera.position.set(-3.23, 2.98, 4.06)
+    camera.position.set(-3.23, 2.2, 5.06)
     camera.updateProjectionMatrix()
 
 
@@ -175,10 +201,10 @@ export const useThree3 = () => {
     ghostgroup.add(ghost1.position,'z').min(-10).max(10).step(0.01);
 
     // 多面体参数
-    const cubeHelpergroup = gui.addFolder('Cube-Helper');
-    cubeHelpergroup.add(cube.position,'x').min(-10).max(10).step(0.01);
-    cubeHelpergroup.add(cube.position,'y').min(-10).max(10).step(0.01);
-    cubeHelpergroup.add(cube.position,'z').min(-10).max(10).step(0.01);
+    // const cubeHelpergroup = gui.addFolder('Cube-Helper');
+    // cubeHelpergroup.add(cube.position,'x').min(-10).max(10).step(0.01);
+    // cubeHelpergroup.add(cube.position,'y').min(-10).max(10).step(0.01);
+    // cubeHelpergroup.add(cube.position,'z').min(-10).max(10).step(0.01);
     
     // scene.add(axesHelper); // 辅助坐标系
     animate()
@@ -212,14 +238,15 @@ const tick = () => {
 
   const animate = () => {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    // cube.rotation.x += 0.01;
+    // cube.rotation.y += 0.01;
     renderer.current!.render(scene, camera);
     controls.current.update();
   };
 
   return {
     animate,
-    init
+    init,
+    percentComplete
   }
 }
