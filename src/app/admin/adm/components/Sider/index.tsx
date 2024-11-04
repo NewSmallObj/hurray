@@ -2,6 +2,7 @@
 import useUser from "@/app/store/useUser";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation"
+import AntdIcon from '@/app/components/AntdIcon/index'
 
 export default function LayoutSider(){
   
@@ -79,7 +80,10 @@ const MenuItem = ({menu}: {menu:any[]}) => {
             return (
               <li key={item.id}>
                 <details open={pathname.includes(item.route_path) && pathname != '/admin/adm'}>
-                  <summary>{item.name}</summary>
+                  <summary>
+                  <AntdIcon name={item?.icon} />
+                    {item.name}
+                  </summary>
                   <ul>
                     <MenuItem menu={item.children} />
                   </ul>
@@ -96,6 +100,7 @@ const MenuItem = ({menu}: {menu:any[]}) => {
                 }
                 onClick={()=> handler(item)}
               >
+              <AntdIcon name={item?.icon} />
               {item.name}
               </a>
             </li>

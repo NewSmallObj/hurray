@@ -11,7 +11,7 @@ export default function LayoutHeader(){
       className={
         clsx(`w-full h-[50px] leading-[50px] px-[20px] box-border shadow-md relative z-10 flex justify-between items-center`)
       }>
-      <div>Header</div>
+      <div>Tanstar's</div>
       <div className="flex justify-end items-center gap-1">
         <SelectorTheme />
         <Account />
