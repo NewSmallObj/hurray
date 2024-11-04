@@ -8,16 +8,54 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { GUI } from "three/examples/jsm/libs/lil-gui.module.min"
+import { GUI } from "three/examples/jsm/libs/lil-gui.module.min";
+
+const skill = [
+  { name: 'node', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'three', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'react', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'vue', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'js', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'ts', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'mysql', postion: { x: 0.41, y: -0.57, z: 1.4 } },
+  { name: 'mongodb', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'git', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'next', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'tailwind', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'less', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'sass', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'nest', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'prisma', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'antd', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'redux', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'element', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+  { name: 'vant', postion: { x: 0.41, y: -0.57, z: 1.4 }},
+]
+
 export const useThree3 = () => {
 
   const renderer = useRef<THREE.WebGLRenderer>()
   const size = useSize(() => document.querySelector('#three'))
   const scene = new THREE.Scene();
-  const stars = new THREE.Group();
+  const controls = useRef<any>()
 
-  // scene.background = new THREE.Color( 0xbfe3dd );
-  scene.background = null;
+  scene.background = null; //new THREE.Color( 0xbfe3dd )
+
+  // const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2); // 立方体
+  // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 材质
+  // const cube = new THREE.Mesh(geometry, material); // 网格模型
+
+  // 多面体
+  const geometry = new THREE.DodecahedronGeometry( 0.2, 0 ); //BoxGeometry(0.15,0.15,0.15) //
+  const material = new THREE.MeshStandardMaterial( {
+    color: 0x915eff, // new THREE.Color().setHSL( Math.random(), 1, 0.75, THREE.SRGBColorSpace ),
+    roughness: 0.5,
+    metalness: 0,
+    flatShading: true
+  });
+  const cube = new THREE.Mesh( geometry, material ) 
+  cube.position.set(0.41, -0.57, 1.4) // 0.33 0.66 2.62
+  const cubeHelper = new THREE.BoxHelper(cube);
 
   // 环境光
   const ambientLight = new THREE.AmbientLight( 0xffffff ,0.5);
@@ -48,8 +86,8 @@ export const useThree3 = () => {
   ghost3.position.set(0, 1.2, 0)
   const ghost1Helper = new THREE.PointLightHelper(ghost2, 0.2);
   
-  
-  const axesHelper = new THREE.AxesHelper(5); // 辅助坐标系
+  // 辅助坐标系
+  const axesHelper = new THREE.AxesHelper(5); 
 
   // 初始化loader
   const dracoLoader = new DRACOLoader();
@@ -57,32 +95,13 @@ export const useThree3 = () => {
   const gltfLoader = new GLTFLoader();
   gltfLoader.setDRACOLoader(dracoLoader);
 
-
-
-
-
   const camera = new THREE.PerspectiveCamera(
     35, // 视角
     size?.width! / size?.height!, // 宽高比
     0.1, // 近裁剪面
     1000 // 远裁剪面 
   );
-  const controls = useRef<any>()
-
-  const createStars = () => {
-    for (let i = 0; i < 500; i++) {
-      const geometry = new THREE.IcosahedronGeometry(Math.random() * 2, 0);
-      const material = new THREE.MeshToonMaterial({ color: 0xeeeeee });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = (Math.random() - 0.5) * 700;
-      mesh.position.y = (Math.random() - 0.5) * 700;
-      mesh.position.z = (Math.random() - 0.5) * 700;
-      mesh.rotation.x = Math.random() * 2 * Math.PI;
-      mesh.rotation.y = Math.random() * 2 * Math.PI;
-      mesh.rotation.z = Math.random() * 2 * Math.PI;
-      stars.add(mesh);
-    }
-  }
+  
 
   const init = () => {
     renderer.current = new THREE.WebGLRenderer({
@@ -101,17 +120,14 @@ export const useThree3 = () => {
       const model = gltf.scene;
       const boundingBox = new THREE.Box3().setFromObject(model);
       const size = boundingBox.getSize(new THREE.Vector3());
+      // model.rotation.y = Math.PI / 180 * 300;
       console.log('Model size:', size);
 
-      model.scale.set(0.3, 0.3, 0.3);
+      model.scale.set(0.25, 0.25, 0.25);
       scene.add(model);
 
     });
     
-
-    // createStars()
-    // scene.add(stars);
-
 
     scene.add(ambientLight); // 环境光
     scene.add(light); // 平行光
@@ -122,6 +138,9 @@ export const useThree3 = () => {
     scene.add(ghost2)
     scene.add(ghost3)
     // scene.add(ghost1Helper)
+    scene.add(cube);
+
+    scene.add(cubeHelper);
 
     camera.position.set(-3.23, 2.98, 4.06)
     camera.updateProjectionMatrix()
@@ -154,6 +173,12 @@ export const useThree3 = () => {
     ghostgroup.add(ghost1.position,'x').min(-10).max(10).step(0.01);
     ghostgroup.add(ghost1.position,'y').min(-10).max(10).step(0.01);
     ghostgroup.add(ghost1.position,'z').min(-10).max(10).step(0.01);
+
+    // 多面体参数
+    const cubeHelpergroup = gui.addFolder('Cube-Helper');
+    cubeHelpergroup.add(cube.position,'x').min(-10).max(10).step(0.01);
+    cubeHelpergroup.add(cube.position,'y').min(-10).max(10).step(0.01);
+    cubeHelpergroup.add(cube.position,'z').min(-10).max(10).step(0.01);
     
     // scene.add(axesHelper); // 辅助坐标系
     animate()
@@ -168,18 +193,18 @@ const tick = () => {
 
   // Ghosts
   const ghost1Angle = elapsedTime * 0.5
-  ghost1.position.x = Math.cos(ghost1Angle) * 2
-  ghost1.position.z = Math.sin(ghost1Angle) * 2
+  ghost1.position.x = Math.cos(ghost1Angle) * 1.5
+  ghost1.position.z = Math.sin(ghost1Angle) * 1.5
   // ghost1.position.y = Math.sin(elapsedTime * 3)
 
   const ghost2Angle = -elapsedTime * 0.32
-  ghost2.position.x = Math.cos(ghost2Angle) * 3
-  ghost2.position.z = Math.sin(ghost2Angle) * 3
+  ghost2.position.x = Math.cos(ghost2Angle) * 1.5
+  ghost2.position.z = Math.sin(ghost2Angle) * 1.5
   // ghost2.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5)
 
   const ghost3Angle = -elapsedTime * 0.18
-  ghost3.position.x = Math.cos(ghost3Angle) * (4 + Math.sin(elapsedTime * 0.32))
-  ghost3.position.z = Math.sin(ghost3Angle) * (4 + Math.sin(elapsedTime * 0.5))
+  ghost3.position.x = Math.cos(ghost3Angle) * (3 + Math.sin(elapsedTime * 0.32))
+  ghost3.position.z = Math.sin(ghost3Angle) * (3 + Math.sin(elapsedTime * 0.5))
   // ghost3.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5)
 
   requestAnimationFrame(tick)
@@ -187,6 +212,8 @@ const tick = () => {
 
   const animate = () => {
     requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
     renderer.current!.render(scene, camera);
     controls.current.update();
   };
