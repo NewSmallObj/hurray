@@ -14,7 +14,7 @@ export default function Scene() {
 
   useThrottleEffect(()=>{
     init()
-  },[],{wait:100})
+  },[],{wait:500})
 
   
   return (
@@ -41,6 +41,7 @@ export default function Scene() {
       </div>
       {/* bg-gradient-to-b from-[#020512] to-[#050816] */}
       <div id="three" className='w-full h-full box-border relative z-10 bg-transparent'></div>
-    </div>
+
+     </div>
   )
 }
