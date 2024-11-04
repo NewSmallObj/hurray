@@ -9,6 +9,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/app/_api/common/user'
 import useUser from '@/app/store/useUser'
+import { message } from 'antd/lib/index'
 
 export default function LoginPage() {
 	const [form] = Form.useForm()
@@ -50,8 +51,12 @@ export default function LoginPage() {
 				// console.log(res.data)
         setUserData(res.data)
 				router.push('/admin/adm')
-			}
+			}else{
+        message.error('用户名或密码错误')
+      }
 		} catch (error) {
+      console.log(error)
+      message.error('用户名或密码错误')
 		} finally {
 			setTimeout(() => {
         setLodaing(false)

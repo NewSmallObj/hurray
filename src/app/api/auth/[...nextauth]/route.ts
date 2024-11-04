@@ -26,6 +26,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
+          
           throw new NextResponse('用户不存在', { status: 401 });
         }
 

@@ -26,6 +26,7 @@ export default function Home() {
 			<div className="w-[1330px] m-auto p-[30px] z-20 absolute text-[#aaa6c3] text-lg gap-[60px] flex justify-end items-center">
 				<div className="cursor-pointer">简介</div>
 				<Link href={'http://8.140.224.171:3002'} target="_blank" className="cursor-pointer">博客</Link>
+        <Link href={'/admin/login'} target="_blank" className="cursor-pointer">演示</Link>
 			</div>
 			<Scene />
 			<div className="w-full flex justify-center items-center mt-[-60px] relative z-20">

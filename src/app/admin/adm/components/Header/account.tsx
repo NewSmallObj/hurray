@@ -1,6 +1,7 @@
 'use client'
 import { UserOutlined,LogoutOutlined } from '@ant-design/icons'
 import { Button, Dropdown, MenuProps, Space } from 'antd'
+import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function Account() {
@@ -17,6 +18,7 @@ export default function Account() {
 
 	const handleMenuClick: MenuProps['onClick'] = (e) => {
     if(e.key === "logout"){
+      signOut()
       router.replace('/admin/login')
     }
   }
