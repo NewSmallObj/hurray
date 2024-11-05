@@ -83,3 +83,45 @@ export const getTreeAllIds = (data: any):string[] => {
 
 export const filterSort= (optionA:any, optionB:any) =>
   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+
+
+
+type OverloadFunction = {
+    (...args: any[]): any;
+    register: (types: (string | symbol)[], fn: Function) => void;
+};
+
+export function createOverload(): OverloadFunction {
+    const fnMap = new Map<string, Function>();
+
+    function overload(this: any, ...args: any[]): any {
+        const key = args.map((a) => Array.isArray(a) ? 'array' : typeof a).join(',');
+        const fn = fnMap.get(key);
+        if (!fn) {
+            throw new Error(`未找到对应的实现`);
+        }
+        return fn.apply(this, args);
+    }
+
+    overload.register = function (types: (string | symbol)[], fn: Function): void {
+        if (typeof fn !== 'function') {
+            throw new Error('最后一个参数必须是函数');
+        }
+        const key = types.join(',');
+        fnMap.set(key, fn);
+    };
+
+    return overload as OverloadFunction;
+}
+
+
+// 示例用法
+// const myOverload = createOverload();
+
+// myOverload.register(['string', 'string'], (a: string, b: string) => a + b);
+// myOverload.register(['number', 'number'], (a: number, b: number) => a + b);
+// myOverload.register(['string', 'number'], (a: string, b: number) => ({ text: a, value: b }));
+
+// console.log(myOverload("Hello", "World")); // 输出: HelloWorld
+// console.log(myOverload(10, 20));           // 输出: 30
+// console.log(myOverload("Age:", 25));  
